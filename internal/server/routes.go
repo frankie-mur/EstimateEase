@@ -28,6 +28,9 @@ func (s *Server) HelloWorldHandler(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write(jsonResp)
 }
 
+// Create a new publisher
+var pub = NewPublisher()
+
 func (s *Server) HelloWebSocketHandler(w http.ResponseWriter, r *http.Request) {
 	conn, err := s.upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -36,14 +39,15 @@ func (s *Server) HelloWebSocketHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//Create a new producer
-	pub := NewPublisher()
+	////Create a new publisher
+	//pub := NewPublisher()
 
 	sub := NewSubscriber(conn, pub)
 
-	pub.addSubscriber(NewSubscriber(conn, pub))
-	//Start subscriper background proccesses to
+	pub.addSubscriber(sub)
+	//Start subscriber background processes to
 	//read and write messages
 	go sub.readMessage()
+	go sub.writeMessages()
 
 }

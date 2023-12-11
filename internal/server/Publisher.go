@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"sync"
 )
 
@@ -31,9 +32,17 @@ func (p *Publisher) removeSubscriber(sub *Subscriber) {
 	if _, ok := p.subs[sub]; ok {
 		//If it is we close the subscriber connection
 		sub.conn.Close()
-		//And deletet from subscriber list
+		//And delete from subscriber list
 		delete(p.subs, sub)
 	}
 
 	p.Unlock()
+}
+
+func (p *Publisher) broadcast(msgData []byte) error {
+	for subs := range p.subs {
+		fmt.Printf("Braoadcasting to %v with data %v\n", subs.conn.RemoteAddr(), msgData)
+		subs.egress <- msgData
+	}
+	return nil
 }
