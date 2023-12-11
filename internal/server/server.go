@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -12,8 +13,10 @@ import (
 )
 
 type Server struct {
-	port     int
-	upgrader *websocket.Upgrader
+	port       int
+	upgrader   *websocket.Upgrader
+	rooms      RoomsList
+	sync.Mutex // guards
 }
 
 func NewServer() *http.Server {
@@ -24,6 +27,7 @@ func NewServer() *http.Server {
 			ReadBufferSize:  1024,
 			WriteBufferSize: 1024,
 		},
+		rooms: make(RoomsList),
 	}
 
 	// Declare Server config
@@ -36,4 +40,21 @@ func NewServer() *http.Server {
 	}
 
 	return server
+}
+
+func (s *Server) addRoom(room *Room) {
+	s.Lock()
+	defer s.Unlock()
+	s.rooms[room] = true
+}
+
+func (s *Server) RemoveRoom(room *Room) {
+	s.Lock()
+	defer s.Unlock()
+
+	//Check if room exists
+	if _, ok := s.rooms[room]; ok {
+		delete(s.rooms, room)
+	}
+
 }

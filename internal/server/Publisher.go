@@ -9,7 +9,7 @@ type Publisher struct {
 	//List of all subscriptions to a producer
 	subs SubscriberList
 	//Used to lock before editing subs
-	//As maps are not concurent safe
+	//As maps are not concurrent safe
 	sync.Mutex
 }
 
@@ -45,4 +45,14 @@ func (p *Publisher) broadcast(msgData []byte) error {
 		subs.egress <- msgData
 	}
 	return nil
+}
+
+func (r *RoomsList) is(id int) (*Room, bool) {
+	//Need to dereference the roomList to iterate over
+	for room, _ := range *r {
+		if room.Id == id {
+			return room, true
+		}
+	}
+	return nil, false
 }
