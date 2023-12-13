@@ -1,6 +1,7 @@
 package server
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"time"
@@ -33,21 +34,22 @@ func NewSubscriber(conn *websocket.Conn, publisher *Publisher) *Subscriber {
 
 // Reads a websocket message setting read limits and pong handler
 // for safety and durability
-func (s *Subscriber) readMessage() {
+func (s *Subscriber) ReadMessage() {
 	defer func() {
 		// clean up connection
-		s.publisher.removeSubscriber(s)
+		s.publisher.RemoveSubscriber(s)
 	}()
 	if err := s.conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
 		fmt.Println(err)
 		return
 	}
-	//TODO: set this limit to htmx websocket request size
 	s.conn.SetReadLimit(512)
 
 	s.conn.SetPongHandler(s.pongHandler)
 
 	for {
+		var event Event
+
 		msgType, payload, err := s.conn.ReadMessage()
 
 		if err != nil {
@@ -56,10 +58,18 @@ func (s *Subscriber) readMessage() {
 			}
 			break
 		}
+
+		err = json.Unmarshal(payload, &event)
+		if err != nil {
+			fmt.Print("Error unmarshalling event: ", err)
+			break
+		}
+
 		fmt.Printf("msgType: %v payload: %v\n", msgType, string(payload))
+		fmt.Printf("Event: %v\n", event)
 		//Broadcast the message to all subscribers
 		go func() {
-			err := s.publisher.broadcast(payload)
+			err := s.publisher.Broadcast(payload)
 			if err != nil {
 				log.Printf("failed to broadcast message: %v", err)
 			}
@@ -67,9 +77,9 @@ func (s *Subscriber) readMessage() {
 	}
 }
 
-func (s *Subscriber) writeMessages() {
+func (s *Subscriber) WriteMessages() {
 	defer func() {
-		s.publisher.removeSubscriber(s)
+		s.publisher.RemoveSubscriber(s)
 	}()
 	ticker := time.NewTicker(pingInterval)
 

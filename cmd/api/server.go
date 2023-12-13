@@ -1,6 +1,7 @@
-package server
+package main
 
 import (
+	"estimate-ease/internal/server"
 	"fmt"
 	"net/http"
 	"os"
@@ -15,7 +16,7 @@ import (
 type Server struct {
 	port       int
 	upgrader   *websocket.Upgrader
-	rooms      RoomsList
+	rooms      server.RoomsList
 	sync.Mutex // guards
 }
 
@@ -27,7 +28,7 @@ func NewServer() *http.Server {
 			ReadBufferSize:  1024,
 			WriteBufferSize: 1024,
 		},
-		rooms: make(RoomsList),
+		rooms: make(server.RoomsList),
 	}
 
 	// Declare Server config
@@ -42,13 +43,13 @@ func NewServer() *http.Server {
 	return server
 }
 
-func (s *Server) addRoom(room *Room) {
+func (s *Server) addRoom(room *server.Room) {
 	s.Lock()
 	defer s.Unlock()
 	s.rooms[room] = true
 }
 
-func (s *Server) RemoveRoom(room *Room) {
+func (s *Server) RemoveRoom(room *server.Room) {
 	s.Lock()
 	defer s.Unlock()
 

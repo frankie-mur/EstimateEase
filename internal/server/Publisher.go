@@ -3,6 +3,8 @@ package server
 import (
 	"fmt"
 	"sync"
+
+	"github.com/google/uuid"
 )
 
 type Publisher struct {
@@ -19,13 +21,13 @@ func NewPublisher() *Publisher {
 	}
 }
 
-func (p *Publisher) addSubscriber(sub *Subscriber) {
+func (p *Publisher) AddSubscriber(sub *Subscriber) {
 	p.Lock()
 	p.subs[sub] = true
 	p.Unlock()
 }
 
-func (p *Publisher) removeSubscriber(sub *Subscriber) {
+func (p *Publisher) RemoveSubscriber(sub *Subscriber) {
 	p.Lock()
 
 	//Check if the subscriber is in the subscriber list
@@ -39,7 +41,7 @@ func (p *Publisher) removeSubscriber(sub *Subscriber) {
 	p.Unlock()
 }
 
-func (p *Publisher) broadcast(msgData []byte) error {
+func (p *Publisher) Broadcast(msgData []byte) error {
 	for subs := range p.subs {
 		fmt.Printf("Braoadcasting to %v with data %v\n", subs.conn.RemoteAddr(), msgData)
 		subs.egress <- msgData
@@ -47,7 +49,7 @@ func (p *Publisher) broadcast(msgData []byte) error {
 	return nil
 }
 
-func (r *RoomsList) is(id int) (*Room, bool) {
+func (r *RoomsList) Is(id uuid.UUID) (*Room, bool) {
 	//Need to dereference the roomList to iterate over
 	for room, _ := range *r {
 		if room.Id == id {

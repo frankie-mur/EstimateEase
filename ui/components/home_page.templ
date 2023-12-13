@@ -1,0 +1,68 @@
+package components
+
+templ HomePage(name string) {
+	<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>EstimateEase - Planning Poker</title>
+
+        <!-- Include Alpine.js for DaisyUI to work -->
+        <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
+
+        <!-- Include DaisyUI CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@0.5.0/dist/full.css" rel="stylesheet"/>
+
+        <!-- Include HTMX -->
+        <script src="https://unpkg.com/htmx.org@1.9.9/dist/htmx.js"></script>
+
+        <!-- Include HTMX Websocket -->
+        <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
+
+    </head>
+    <body class="bg-gray-100">
+
+        <div class="container mx-auto p-8 mt-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-8">EstimateEase - Planning Poker</h1>
+
+            <!-- Create Room Form -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold mb-4">Create a New Room</h2>
+                <form hx-post="/room" hx-target="#result">
+                    <div class="flex space-x-4">
+                        <input
+                            type="text"
+                            id="roomName"
+                            name="roomName"
+                            placeholder="Enter room name"
+                            class="px-4 py-2 border rounded w-64"
+                            required
+                        />
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Create Room</button>
+                    </div>
+                </form>
+            </div>
+            <div id="result"></div>
+
+            <!-- Join Room Form -->
+            <div>
+                <h2 class="text-2xl font-bold mb-4">Join an Existing Room</h2>
+                <form action="/room/join" method="POST">
+                    <div class="flex space-x-4">
+                        <input
+                            type="text"
+                            id="roomID"
+                            name="roomID"
+                            placeholder="Enter room ID"
+                            class="px-4 py-2 border rounded w-64"
+                            required
+                        />
+                        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Join Room</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+    </html>
+}
