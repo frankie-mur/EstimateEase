@@ -41,7 +41,7 @@ func (p *Publisher) RemoveSubscriber(sub *Subscriber) {
 	p.Unlock()
 }
 
-func (p *Publisher) Broadcast(msgData []byte) error {
+func (p *Publisher) Broadcast(msgData Event) error {
 	for subs := range p.subs {
 		fmt.Printf("Braoadcasting to %v with data %v\n", subs.conn.RemoteAddr(), msgData)
 		subs.egress <- msgData

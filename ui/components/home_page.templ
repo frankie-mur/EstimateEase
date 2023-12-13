@@ -8,11 +8,10 @@ templ HomePage(name string) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <title>EstimateEase - Planning Poker</title>
 
-        <!-- Include Alpine.js for DaisyUI to work -->
-        <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
 
         <!-- Include DaisyUI CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/daisyui@0.5.0/dist/full.css" rel="stylesheet"/>
+       <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
+       <script src="https://cdn.tailwindcss.com"></script>
 
         <!-- Include HTMX -->
         <script src="https://unpkg.com/htmx.org@1.9.9/dist/htmx.js"></script>
@@ -21,10 +20,10 @@ templ HomePage(name string) {
         <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
 
     </head>
-    <body class="bg-gray-100">
+    <body>
 
         <div class="container mx-auto p-8 mt-8">
-            <h1 class="text-4xl font-bold text-gray-800 mb-8">EstimateEase - Planning Poker</h1>
+            <h1 class="text-4xl font-bold mb-8">EstimateEase - Planning Poker</h1>
 
             <!-- Create Room Form -->
             <div class="mb-8">

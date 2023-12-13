@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	pongWait     = 10 * time.Second
+	pongWait     = 1 * time.Second
 	pingInterval = (pongWait * 9) / 10
 )
 
@@ -21,14 +21,14 @@ type Subscriber struct {
 	conn      *websocket.Conn
 	publisher *Publisher
 	// egress is used to avoid concurrent writes on websocket conn
-	egress chan []byte
+	egress chan Event
 }
 
 func NewSubscriber(conn *websocket.Conn, publisher *Publisher) *Subscriber {
 	return &Subscriber{
 		conn:      conn,
 		publisher: publisher,
-		egress:    make(chan []byte),
+		egress:    make(chan Event),
 	}
 }
 
@@ -69,7 +69,7 @@ func (s *Subscriber) ReadMessage() {
 		fmt.Printf("Event: %v\n", event)
 		//Broadcast the message to all subscribers
 		go func() {
-			err := s.publisher.Broadcast(payload)
+			err := s.publisher.Broadcast(event)
 			if err != nil {
 				log.Printf("failed to broadcast message: %v", err)
 			}
@@ -85,7 +85,7 @@ func (s *Subscriber) WriteMessages() {
 
 	for {
 		select {
-		case message, ok := <-s.egress:
+		case event, ok := <-s.egress:
 			if !ok {
 				if err := s.conn.WriteMessage(websocket.CloseMessage, nil); err != nil {
 					log.Printf("connection closed %v", err)
@@ -93,7 +93,12 @@ func (s *Subscriber) WriteMessages() {
 				return
 			}
 
-			if err := s.conn.WriteMessage(websocket.TextMessage, message); err != nil {
+			data, err := json.Marshal(event)
+			if err != nil {
+				fmt.Printf("failed to unmarshal message: %v", err)
+			}
+
+			if err := s.conn.WriteMessage(websocket.TextMessage, data); err != nil {
 				log.Printf("failed to send message: %v", err)
 			}
 			log.Printf("message sent")
