@@ -1,6 +1,7 @@
 package server
 
 import (
+	"estimate-ease/internal/data"
 	"fmt"
 	"sync"
 
@@ -40,13 +41,35 @@ func (p *Publisher) RemoveSubscriber(sub *Subscriber) {
 	}
 }
 
-func (p *Publisher) Broadcast(voteMap *Votes) error {
+func (p *Publisher) Broadcast(voteMap *data.Votes) error {
 	//For each user we want to send them a updated list of
 	//All the current votes
-	htmlResponse :=
-		fmt.Sprintf("<div id=\"room-data\">Current Results: %v</div>", voteMap)
+	trData := ""
+	//TODO: Data here should be sorted as we want consistant Results
+	for name, vote := range voteMap.VoteMap {
+		trData += fmt.Sprintf("<tr><td> %v </td><td> %v </td></tr>", name, vote)
+	}
 
-	for subs := range p.Subs {
+	htmlResponse := fmt.Sprintf(`
+	<div id="room-data">
+	<div class="overflow-x-auto">
+     <table class="table table-zebra">
+     <!-- head -->
+     <thead>
+      <tr>
+        <th>Name</th>
+        <th>Vote</th>
+      </tr>
+     </thead>
+      <tbody>
+       %v
+      </tbody>
+     </table>
+   </div> 
+   <div>
+   `, trData)
+
+	for subs, _ := range p.Subs {
 		fmt.Printf("Braoadcasting to %v with data %v\n", subs.conn.RemoteAddr(), htmlResponse)
 		subs.egress <- []byte(htmlResponse)
 	}

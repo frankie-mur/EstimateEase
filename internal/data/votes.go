@@ -1,4 +1,4 @@
-package server
+package data
 
 import "sync"
 
@@ -14,7 +14,7 @@ func NewVoteMap() *Votes {
 	}
 }
 
-func (v *Votes) update(name string, vote string) {
+func (v *Votes) Update(name string, vote string) {
 	v.Mutex.Lock()
 	defer v.Mutex.Unlock()
 

@@ -84,7 +84,7 @@ func (s *Subscriber) ReadMessage(room *Room) {
 		fmt.Printf("Event: %v\n", event)
 		//Update the user vote map for that specific user
 		//NOTE: this is concurrent safe
-		room.VoteMap.update(s.name, event.Payload)
+		room.VoteMap.Update(s.name, event.Payload)
 
 		//Broadcast the updated vote map to all subscribers
 		go func() {
