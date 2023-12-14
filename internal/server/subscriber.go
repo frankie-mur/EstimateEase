@@ -21,20 +21,35 @@ type Subscriber struct {
 	conn      *websocket.Conn
 	publisher *Publisher
 	// egress is used to avoid concurrent writes on websocket conn
-	egress chan Event
+	egress chan []byte
+	name   string
 }
 
-func NewSubscriber(conn *websocket.Conn, publisher *Publisher) *Subscriber {
-	return &Subscriber{
+func NewSubscriber(conn *websocket.Conn, room *Room, displayName string) *Subscriber {
+	sub := &Subscriber{
 		conn:      conn,
-		publisher: publisher,
-		egress:    make(chan Event),
+		publisher: room.Pub,
+		egress:    make(chan []byte),
+		name:      displayName,
 	}
+	//Start subscriber background processes to
+	//read and write messages
+	//room is passed into ReadMessage as needed to broadcast messages to all subscribers
+	go sub.ReadMessage(room)
+	go sub.WriteMessages()
+
+	return sub
 }
 
-// Reads a websocket message setting read limits and pong handler
-// for safety and durability
-func (s *Subscriber) ReadMessage() {
+// ReadMessage Reads a websocket message setting read limits and pong handler
+//  1. SetReadDeadline to pongWait from now + pongWait
+//  2. SetReadLimit to 512 bytes (max message size) to avoid large messages
+//  3. SetPongHandler to pongHandler to handle pong messages
+//  4. Read messages from the websocket connection
+//  5. If the message of type Event then update the voteMap to the Event payload
+//     and broadcast updated voteMap to all subscribers
+//  6. If the message is a close message or error then close the connection
+func (s *Subscriber) ReadMessage(room *Room) {
 	defer func() {
 		// clean up connection
 		s.publisher.RemoveSubscriber(s)
@@ -67,9 +82,13 @@ func (s *Subscriber) ReadMessage() {
 
 		fmt.Printf("msgType: %v payload: %v\n", msgType, string(payload))
 		fmt.Printf("Event: %v\n", event)
-		//Broadcast the message to all subscribers
+		//Update the user vote map for that specific user
+		//NOTE: this is concurrent safe
+		room.VoteMap.update(s.name, event.Payload)
+
+		//Broadcast the updated vote map to all subscribers
 		go func() {
-			err := s.publisher.Broadcast(event)
+			err := s.publisher.Broadcast(room.VoteMap)
 			if err != nil {
 				log.Printf("failed to broadcast message: %v", err)
 			}
@@ -77,6 +96,10 @@ func (s *Subscriber) ReadMessage() {
 	}
 }
 
+// WriteMessages writes messages to the websocket connection
+// 1. Sets a ticker interval to pong the client
+// 2. Reads messages from the egress channel
+// 3. Sends messages to the client
 func (s *Subscriber) WriteMessages() {
 	defer func() {
 		s.publisher.RemoveSubscriber(s)
@@ -85,7 +108,7 @@ func (s *Subscriber) WriteMessages() {
 
 	for {
 		select {
-		case event, ok := <-s.egress:
+		case msg, ok := <-s.egress:
 			if !ok {
 				if err := s.conn.WriteMessage(websocket.CloseMessage, nil); err != nil {
 					log.Printf("connection closed %v", err)
@@ -93,12 +116,7 @@ func (s *Subscriber) WriteMessages() {
 				return
 			}
 
-			data, err := json.Marshal(event)
-			if err != nil {
-				fmt.Printf("failed to unmarshal message: %v", err)
-			}
-
-			if err := s.conn.WriteMessage(websocket.TextMessage, data); err != nil {
+			if err := s.conn.WriteMessage(websocket.TextMessage, msg); err != nil {
 				log.Printf("failed to send message: %v", err)
 			}
 			log.Printf("message sent")
@@ -106,7 +124,7 @@ func (s *Subscriber) WriteMessages() {
 		//Wait on ticker to avoid subscriber from timing out
 		case <-ticker.C:
 			log.Printf("ping")
-			//Send ping to clinet
+			//Send ping to client
 			if err := s.conn.WriteMessage(websocket.PingMessage, []byte(``)); err != nil {
 				log.Printf("failed to send ping: %v", err)
 				return

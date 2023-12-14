@@ -3,7 +3,7 @@ package server
 // Represent an HTMX websocket event
 type Event struct {
 	Header  HTMXHeader `json:"HEADERS"`
-	Payload any        `json:"payload"`
+	Payload string     `json:"payload"`
 }
 
 type HTMXHeader struct {

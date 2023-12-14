@@ -3,7 +3,7 @@ package components
 import "estimate-ease/internal/server"
 import "fmt"
 
-templ RoomPage(room server.Room) {
+templ RoomPage(pageData server.RoomPageData) {
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -25,13 +25,25 @@ templ RoomPage(room server.Room) {
 
     <div class="container mx-auto mt-10">
         <h1 class="text-3xl mb-6">Room Session</h1>
-        <p class="text-lg mb-6">Room Name: { room.RoomName } </p>
+        <p class="text-lg mb-6">Room Name: { pageData.Room.RoomName } </p>
     </div>
-      <div hx-ext="ws" ws-connect={ fmt.Sprintf("/ws/room/%v", room.Id)}>
+      <div hx-ext="ws" ws-connect={ fmt.Sprintf("/ws/room/%v/%v", pageData.Room.Id, pageData.DisplayName)}>
           <div id="room-data"></div>
           <form id="form" ws-send>
-              <input type="text" id="payload" name="payload" placeholder="enter story points"/> 
-              <button class="btn" type="submit"> send </button>
+              <input type="hidden" id="payload" name="payload" value="1" readonly/> 
+              <button class="btn" type="submit"> 1 </button>
+          </form>
+           <form id="form" ws-send>
+              <input type="hidden" id="payload" name="payload" value="3" readonly/> 
+              <button class="btn" type="submit"> 3 </button>
+          </form>
+           <form id="form" ws-send>
+              <input type="hidden" id="payload" name="payload" value="5" readonly/> 
+              <button class="btn" type="submit"> 5 </button>
+          </form>
+           <form id="form" ws-send>
+              <input type="hidden" id="payload" name="payload" value="8" readonly/> 
+              <button class="btn" type="submit"> 8 </button>
           </form>
       </div>
 

@@ -32,7 +32,7 @@ func NewServer() *http.Server {
 	}
 
 	// Declare Server config
-	server := &http.Server{
+	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%d", NewServer.port),
 		Handler:      NewServer.RegisterRoutes(),
 		IdleTimeout:  time.Minute,
@@ -40,7 +40,7 @@ func NewServer() *http.Server {
 		WriteTimeout: 30 * time.Second,
 	}
 
-	return server
+	return srv
 }
 
 func (s *Server) addRoom(room *server.Room) {
@@ -49,7 +49,7 @@ func (s *Server) addRoom(room *server.Room) {
 	s.rooms[room] = true
 }
 
-func (s *Server) RemoveRoom(room *server.Room) {
+func (s *Server) removeRoom(room *server.Room) {
 	s.Lock()
 	defer s.Unlock()
 

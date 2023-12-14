@@ -140,7 +140,7 @@ func HomePage(name string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h2><form action=\"/room/join\" method=\"POST\"><div class=\"flex space-x-4\"><input type=\"text\" id=\"roomID\" name=\"roomID\" placeholder=\"Enter room ID\" class=\"px-4 py-2 border rounded w-64\" required> <button type=\"submit\" class=\"bg-green-500 text-white px-4 py-2 rounded\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h2><form action=\"/room/join\" method=\"POST\"><div class=\"flex space-x-4\"><input type=\"text\" id=\"displayName\" name=\"displayName\" placeholder=\"Enter display name\" class=\"px-4 py-2 border rounded w-64\" required> <input type=\"text\" id=\"roomID\" name=\"roomID\" placeholder=\"Enter room ID\" class=\"px-4 py-2 border rounded w-64\" required> <button type=\"submit\" class=\"bg-green-500 text-white px-4 py-2 rounded\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

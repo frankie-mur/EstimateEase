@@ -13,7 +13,7 @@ import "bytes"
 import "estimate-ease/internal/server"
 import "fmt"
 
-func RoomPage(room server.Room) templ.Component {
+func RoomPage(pageData server.RoomPageData) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -107,7 +107,7 @@ func RoomPage(room server.Room) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var11 string = room.RoomName
+		var templ_7745c5c3_Var11 string = pageData.Room.RoomName
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -116,16 +116,43 @@ func RoomPage(room server.Room) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(fmt.Sprintf("/ws/room/%v", room.Id)))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(fmt.Sprintf("/ws/room/%v/%v", pageData.Room.Id, pageData.DisplayName)))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><div id=\"room-data\"></div><form id=\"form\" ws-send><input type=\"text\" id=\"payload\" name=\"payload\" placeholder=\"enter story points\"> <button class=\"btn\" type=\"submit\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><div id=\"room-data\"></div><form id=\"form\" ws-send><input type=\"hidden\" id=\"payload\" name=\"payload\" value=\"1\" readonly> <button class=\"btn\" type=\"submit\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var12 := `send `
+		templ_7745c5c3_Var12 := `1 `
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button></form><form id=\"form\" ws-send><input type=\"hidden\" id=\"payload\" name=\"payload\" value=\"3\" readonly> <button class=\"btn\" type=\"submit\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Var13 := `3 `
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var13)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button></form><form id=\"form\" ws-send><input type=\"hidden\" id=\"payload\" name=\"payload\" value=\"5\" readonly> <button class=\"btn\" type=\"submit\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Var14 := `5 `
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var14)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button></form><form id=\"form\" ws-send><input type=\"hidden\" id=\"payload\" name=\"payload\" value=\"8\" readonly> <button class=\"btn\" type=\"submit\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Var15 := `8 `
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var15)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

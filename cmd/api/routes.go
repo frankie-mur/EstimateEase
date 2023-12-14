@@ -16,19 +16,15 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.Get("/", s.home)
 	r.Post("/room", s.createRoom)
 	r.Post("/room/join", s.joinRoom)
-	r.Get("/ws/room/{roomID}", s.connectToRoom)
-	r.Get("/room/{roomID}", s.roomPage)
+	r.Get("/ws/room/{roomID}/{displayName}", s.connectToRoom)
+	r.Get("/room/{roomID}/{displayName}", s.roomPage)
 
 	return r
 }
 
 // Create a new room using input name from request body
 func (s *Server) createRoom(w http.ResponseWriter, r *http.Request) {
-	//var input struct {
-	//	RoomName string `json:"roomName"`
-	//}
 	roomName := r.FormValue("roomName")
-	//_ = json.NewDecoder(r.Body).Decode(&input)
 
 	if roomName == "" {
 		http.Error(w, "Invalid room name", http.StatusBadRequest)
@@ -50,10 +46,16 @@ func (s *Server) createRoom(w http.ResponseWriter, r *http.Request) {
 func (s *Server) joinRoom(w http.ResponseWriter, r *http.Request) {
 	//Get the query parameter
 	id := r.FormValue("roomID")
+	displayName := r.FormValue("displayName")
 
 	if id == "" {
 		//Throw an error
-		fmt.Printf("Param not specified")
+		fmt.Printf("Param id not specified")
+		return
+	}
+
+	if displayName == "" {
+		fmt.Printf("displayName not specified")
 		return
 	}
 
@@ -72,17 +74,23 @@ func (s *Server) joinRoom(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Printf("Redirecting to room %v\n", uuidVal)
-	url := fmt.Sprintf("/room/%v", uuidVal.String())
+	url := fmt.Sprintf("/room/%v/%v", uuidVal.String(), displayName)
 	http.Redirect(w, r, url, http.StatusFound)
 }
 
 func (s *Server) connectToRoom(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "roomID")
+	displayName := chi.URLParam(r, "displayName")
 	fmt.Printf("Connecting to room %v\n", id)
 
 	if id == "" {
 		//Throw an error
 		fmt.Printf("Param not specified")
+		return
+	}
+
+	if displayName == "" {
+		fmt.Printf("displayName not specified")
 		return
 	}
 
@@ -109,15 +117,10 @@ func (s *Server) connectToRoom(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Create a new subscriber to join
-	sub := server.NewSubscriber(conn, room.Pub)
+	sub := server.NewSubscriber(conn, room, displayName)
 
 	//add the subscriber to the room
 	room.Pub.AddSubscriber(sub)
-
-	//Start subscriber background processes to
-	//read and write messages
-	go sub.ReadMessage()
-	go sub.WriteMessages()
 }
 
 func (s *Server) home(w http.ResponseWriter, r *http.Request) {
@@ -130,10 +133,16 @@ func (s *Server) home(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) roomPage(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "roomID")
+	displayName := chi.URLParam(r, "displayName")
 
 	if id == "" {
 		//Throw an error
 		fmt.Printf("Param not specified")
+		return
+	}
+
+	if displayName == "" {
+		fmt.Printf("displayName not specified")
 		return
 	}
 
@@ -150,7 +159,13 @@ func (s *Server) roomPage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Room does not exist", http.StatusNotFound)
 		return
 	}
-	c := components.RoomPage(*room)
+
+	pageData := server.RoomPageData{
+		Room:        room,
+		DisplayName: displayName,
+	}
+
+	c := components.RoomPage(pageData)
 	err = c.Render(r.Context(), w)
 	if err != nil {
 		return
