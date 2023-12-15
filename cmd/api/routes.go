@@ -4,20 +4,20 @@ import (
 	"errors"
 	"estimate-ease/internal/server"
 	"estimate-ease/ui/components"
+	"estimate-ease/ui/data"
 	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5/middleware"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/google/uuid"
 )
 
 func (s *Server) RegisterRoutes() http.Handler {
 	r := chi.NewRouter()
 	r.Use(middleware.DefaultLogger)
 	r.Use(middleware.Recoverer)
-	r.Get("/", s.home)
+	r.Get("/", s.homePage)
 	r.Post("/room", s.createRoom)
 	r.Post("/room/join", s.joinRoom)
 	r.Get("/ws/room/{roomID}/{displayName}", s.connectToRoom)
@@ -64,20 +64,14 @@ func (s *Server) joinRoom(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uuidVal, err := uuid.Parse(id)
-	if err != nil {
-		s.badRequestResponse(w, r, err)
-		return
-	}
-
 	//Check that the room exists
-	_, ok := s.rooms.Is(uuidVal)
+	_, ok := s.rooms.Is(id)
 	if !ok {
 		s.notFoundResponse(w, r)
 		return
 	}
 
-	url := fmt.Sprintf("/room/%v/%v", uuidVal.String(), displayName)
+	url := fmt.Sprintf("/room/%v/%v", id, displayName)
 	http.Redirect(w, r, url, http.StatusFound)
 }
 
@@ -95,14 +89,8 @@ func (s *Server) connectToRoom(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uuidVal, err := uuid.Parse(id)
-	if err != nil {
-		s.badRequestResponse(w, r, err)
-		return
-	}
-
 	//Check that the room exists
-	room, ok := s.rooms.Is(uuidVal)
+	room, ok := s.rooms.Is(id)
 	if !ok {
 		s.notFoundResponse(w, r)
 		return
@@ -125,8 +113,8 @@ func (s *Server) connectToRoom(w http.ResponseWriter, r *http.Request) {
 	go sub.Publisher.Broadcast(htmlResponse)
 }
 
-func (s *Server) home(w http.ResponseWriter, r *http.Request) {
-	c := components.HomePage("Frankie")
+func (s *Server) homePage(w http.ResponseWriter, r *http.Request) {
+	c := components.HomePage()
 	err := c.Render(r.Context(), w)
 	if err != nil {
 		s.serverErrorResponse(w, r, err)
@@ -148,26 +136,20 @@ func (s *Server) roomPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uuidVal, err := uuid.Parse(id)
-	if err != nil {
-		s.badRequestResponse(w, r, err)
-		return
-	}
-
 	//Check that the room exists
-	room, ok := s.rooms.Is(uuidVal)
+	room, ok := s.rooms.Is(id)
 	if !ok {
 		s.notFoundResponse(w, r)
 		return
 	}
 
-	pageData := server.RoomPageData{
+	pageData := data.RoomPageData{
 		Room:        room,
 		DisplayName: displayName,
 	}
 
 	c := components.RoomPage(pageData)
-	err = c.Render(r.Context(), w)
+	err := c.Render(r.Context(), w)
 	if err != nil {
 		s.serverErrorResponse(w, r, err)
 	}

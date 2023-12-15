@@ -10,10 +10,10 @@ import "context"
 import "io"
 import "bytes"
 
-import "estimate-ease/internal/server"
 import "fmt"
+import "estimate-ease/ui/data"
 
-func RoomPage(pageData server.RoomPageData) templ.Component {
+func RoomPage(pageData data.RoomPageData) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
