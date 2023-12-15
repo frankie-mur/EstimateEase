@@ -5,8 +5,9 @@ import (
 	"estimate-ease/internal/server"
 	"estimate-ease/ui/components"
 	"fmt"
-	"github.com/go-chi/chi/v5/middleware"
 	"net/http"
+
+	"github.com/go-chi/chi/v5/middleware"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
@@ -78,7 +79,6 @@ func (s *Server) joinRoom(w http.ResponseWriter, r *http.Request) {
 
 	url := fmt.Sprintf("/room/%v/%v", uuidVal.String(), displayName)
 	http.Redirect(w, r, url, http.StatusFound)
-	return
 }
 
 func (s *Server) connectToRoom(w http.ResponseWriter, r *http.Request) {

@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
-	"os"
-	"strconv"
 	"sync"
 	"time"
 
@@ -22,22 +20,11 @@ type Server struct {
 	sync.Mutex // guards
 }
 
-func NewServer() *http.Server {
-	port, _ := strconv.Atoi(os.Getenv("PORT"))
-	NewServer := &Server{
-		port:   port,
-		logger: slog.New(slog.NewTextHandler(os.Stdout, nil)),
-		upgrader: &websocket.Upgrader{
-			ReadBufferSize:  1024,
-			WriteBufferSize: 1024,
-		},
-		rooms: make(server.RoomsList),
-	}
-
+func NewServer(newServer *Server) *http.Server {
 	// Declare Server config
 	srv := &http.Server{
-		Addr:         fmt.Sprintf(":%d", NewServer.port),
-		Handler:      NewServer.RegisterRoutes(),
+		Addr:         fmt.Sprintf(":%d", newServer.port),
+		Handler:      newServer.RegisterRoutes(),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,

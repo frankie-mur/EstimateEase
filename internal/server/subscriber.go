@@ -87,7 +87,7 @@ func (s *Subscriber) ReadMessage(room *Room) {
 		//NOTE: this is concurrent safe
 		room.VoteMap.Update(s.name, event.Payload)
 
-		htmlResponse := buildHTMLResponse(room)
+		htmlResponse := buildHTMLResponse(*room)
 
 		go s.Publisher.Broadcast(htmlResponse)
 	}
@@ -137,7 +137,7 @@ func (s *Subscriber) pongHandler(pongMsg string) error {
 
 // This function is used to build the HTML response for the room page
 // Updating the vote map
-func buildHTMLResponse(room *Room) string {
+func buildHTMLResponse(room Room) string {
 	sortedNames := room.VoteMap.SortedNames()
 
 	trData := ""
