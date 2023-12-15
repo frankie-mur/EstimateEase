@@ -67,7 +67,7 @@ func (s *Server) joinRoom(w http.ResponseWriter, r *http.Request) {
 	//Check that the room exists
 	_, ok := s.rooms.Is(id)
 	if !ok {
-		s.notFoundResponse(w, r)
+		s.roomDoesNotExistResponse(w, r)
 		return
 	}
 
@@ -92,7 +92,7 @@ func (s *Server) connectToRoom(w http.ResponseWriter, r *http.Request) {
 	//Check that the room exists
 	room, ok := s.rooms.Is(id)
 	if !ok {
-		s.notFoundResponse(w, r)
+		s.roomDoesNotExistResponse(w, r)
 		return
 	}
 	//Upgrade the websocket connection
@@ -139,7 +139,7 @@ func (s *Server) roomPage(w http.ResponseWriter, r *http.Request) {
 	//Check that the room exists
 	room, ok := s.rooms.Is(id)
 	if !ok {
-		s.notFoundResponse(w, r)
+		s.roomDoesNotExistResponse(w, r)
 		return
 	}
 

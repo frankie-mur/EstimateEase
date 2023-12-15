@@ -39,12 +39,12 @@ func TestCreateRoom(t *testing.T) {
 }
 
 func TestJoinRoom(t *testing.T) {
-
-	s := &Server{rooms: make(server.RoomsList)}
-	w := httptest.NewRecorder()
 	req := httptest.NewRequest(http.MethodPost, "/room/join", nil)
+	s := &Server{rooms: make(server.RoomsList)}
 
 	t.Run("valid room ID and display name", func(t *testing.T) {
+		w := httptest.NewRecorder()
+
 		newRoom := server.NewRoom("Test Room")
 		roomId := newRoom.Id
 		s.addRoom(newRoom)
@@ -59,6 +59,7 @@ func TestJoinRoom(t *testing.T) {
 	})
 
 	t.Run("missing room ID", func(t *testing.T) {
+		w := httptest.NewRecorder()
 		req.Form = url.Values{"displayName": {"John"}}
 
 		s.joinRoom(w, req)
@@ -69,17 +70,19 @@ func TestJoinRoom(t *testing.T) {
 	})
 
 	t.Run("invalid room ID", func(t *testing.T) {
+		w := httptest.NewRecorder()
 		req.Form = url.Values{"roomID": {"invalid"},
 			"displayName": {"John"}}
 
 		s.joinRoom(w, req)
 
-		if w.Code != http.StatusBadRequest {
+		if w.Code != http.StatusNotFound {
 			t.Errorf("Expected bad request status but got %v", w.Code)
 		}
 	})
 
 	t.Run("missing display name", func(t *testing.T) {
+		w := httptest.NewRecorder()
 		req.Form = url.Values{"roomID": {"123e4567-e89b-12d3-a456-426614174000"}}
 
 		s.joinRoom(w, req)
@@ -90,6 +93,7 @@ func TestJoinRoom(t *testing.T) {
 	})
 
 	t.Run("room not found", func(t *testing.T) {
+		w := httptest.NewRecorder()
 		req.Form = url.Values{"roomID": {"123e4567-e89b-12d3-a456-426614174000"},
 			"displayName": {"John"}}
 

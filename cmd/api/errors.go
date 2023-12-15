@@ -29,6 +29,11 @@ func (s *Server) serverErrorResponse(w http.ResponseWriter, r *http.Request, err
 	s.errorResponse(w, r, http.StatusInternalServerError, message)
 }
 
+func (s *Server) roomDoesNotExistResponse(w http.ResponseWriter, r *http.Request) {
+	message := "the requested room does not exist"
+	s.errorResponse(w, r, http.StatusNotFound, message)
+}
+
 func (s *Server) notFoundResponse(w http.ResponseWriter, r *http.Request) {
 	message := "the requested resource could not be found"
 	s.errorResponse(w, r, http.StatusNotFound, message)
