@@ -1,10 +1,11 @@
 package main
 
 import (
-	"encoding/json"
+	"errors"
 	"estimate-ease/internal/server"
 	"estimate-ease/ui/components"
 	"fmt"
+	"github.com/go-chi/chi/v5/middleware"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -13,6 +14,8 @@ import (
 
 func (s *Server) RegisterRoutes() http.Handler {
 	r := chi.NewRouter()
+	r.Use(middleware.DefaultLogger)
+	r.Use(middleware.Recoverer)
 	r.Get("/", s.home)
 	r.Post("/room", s.createRoom)
 	r.Post("/room/join", s.joinRoom)
@@ -36,10 +39,12 @@ func (s *Server) createRoom(w http.ResponseWriter, r *http.Request) {
 	//add to room to the server list of rooms
 	s.addRoom(room)
 
-	fmt.Printf("Successfully created room %v\n", room)
-	w.Header().Set("Content-Type", "application/json")
-	data, _ := json.Marshal(room)
-	_, _ = w.Write(data)
+	err := s.writeJSON(w, http.StatusCreated, room.Id, nil)
+	if err != nil {
+		s.serverErrorResponse(w, r, err)
+		return
+	}
+
 }
 
 // Joins a client to a room, this will be using websocket connection
@@ -49,70 +54,63 @@ func (s *Server) joinRoom(w http.ResponseWriter, r *http.Request) {
 	displayName := r.FormValue("displayName")
 
 	if id == "" {
-		//Throw an error
-		fmt.Printf("Param id not specified")
+		s.badRequestResponse(w, r, errors.New("invalid room ID"))
 		return
 	}
 
 	if displayName == "" {
-		fmt.Printf("displayName not specified")
+		s.badRequestResponse(w, r, errors.New("invalid display name"))
 		return
 	}
 
 	uuidVal, err := uuid.Parse(id)
 	if err != nil {
-		fmt.Printf("Error parsing uuid: %v", err)
-		http.Error(w, "Invalid uuid", http.StatusBadRequest)
+		s.badRequestResponse(w, r, err)
 		return
 	}
 
 	//Check that the room exists
 	_, ok := s.rooms.Is(uuidVal)
 	if !ok {
-		http.Error(w, "Room does not exist", http.StatusNotFound)
+		s.notFoundResponse(w, r)
 		return
 	}
 
-	fmt.Printf("Redirecting to room %v\n", uuidVal)
 	url := fmt.Sprintf("/room/%v/%v", uuidVal.String(), displayName)
 	http.Redirect(w, r, url, http.StatusFound)
+	return
 }
 
 func (s *Server) connectToRoom(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "roomID")
 	displayName := chi.URLParam(r, "displayName")
-	fmt.Printf("Connecting to room %v\n", id)
 
 	if id == "" {
-		//Throw an error
-		fmt.Printf("Param not specified")
+		s.badRequestResponse(w, r, errors.New("invalid room ID"))
 		return
 	}
 
 	if displayName == "" {
-		fmt.Printf("displayName not specified")
+		s.badRequestResponse(w, r, errors.New("invalid display name"))
 		return
 	}
 
 	uuidVal, err := uuid.Parse(id)
 	if err != nil {
-		fmt.Printf("Error parsing uuid: %v", err)
-		http.Error(w, "Invalid uuid", http.StatusBadRequest)
+		s.badRequestResponse(w, r, err)
 		return
 	}
 
 	//Check that the room exists
 	room, ok := s.rooms.Is(uuidVal)
 	if !ok {
-		http.Error(w, "Room does not exist", http.StatusNotFound)
+		s.notFoundResponse(w, r)
 		return
 	}
-	fmt.Printf("Upgrading connection")
 	//Upgrade the websocket connection
 	conn, err := s.upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		//TODO: use a logger here instead
-		fmt.Printf("An error has occurred: %v", err)
+		s.serverErrorResponse(w, r, err)
 		return
 	}
 
@@ -131,6 +129,7 @@ func (s *Server) home(w http.ResponseWriter, r *http.Request) {
 	c := components.HomePage("Frankie")
 	err := c.Render(r.Context(), w)
 	if err != nil {
+		s.serverErrorResponse(w, r, err)
 		return
 	}
 }
@@ -140,27 +139,25 @@ func (s *Server) roomPage(w http.ResponseWriter, r *http.Request) {
 	displayName := chi.URLParam(r, "displayName")
 
 	if id == "" {
-		//Throw an error
-		fmt.Printf("Param not specified")
+		s.badRequestResponse(w, r, errors.New("invalid room ID"))
 		return
 	}
 
 	if displayName == "" {
-		fmt.Printf("displayName not specified")
+		s.badRequestResponse(w, r, errors.New("invalid display name"))
 		return
 	}
 
 	uuidVal, err := uuid.Parse(id)
 	if err != nil {
-		fmt.Printf("Error parsing uuid: %v", err)
-		http.Error(w, "Invalid uuid", http.StatusBadRequest)
+		s.badRequestResponse(w, r, err)
 		return
 	}
 
 	//Check that the room exists
 	room, ok := s.rooms.Is(uuidVal)
 	if !ok {
-		http.Error(w, "Room does not exist", http.StatusNotFound)
+		s.notFoundResponse(w, r)
 		return
 	}
 
@@ -172,6 +169,6 @@ func (s *Server) roomPage(w http.ResponseWriter, r *http.Request) {
 	c := components.RoomPage(pageData)
 	err = c.Render(r.Context(), w)
 	if err != nil {
-		return
+		s.serverErrorResponse(w, r, err)
 	}
 }

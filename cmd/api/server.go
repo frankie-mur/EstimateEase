@@ -3,6 +3,7 @@ package main
 import (
 	"estimate-ease/internal/server"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"os"
 	"strconv"
@@ -15,6 +16,7 @@ import (
 
 type Server struct {
 	port       int
+	logger     *slog.Logger
 	upgrader   *websocket.Upgrader
 	rooms      server.RoomsList
 	sync.Mutex // guards
@@ -23,7 +25,8 @@ type Server struct {
 func NewServer() *http.Server {
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
 	NewServer := &Server{
-		port: port,
+		port:   port,
+		logger: slog.New(slog.NewTextHandler(os.Stdout, nil)),
 		upgrader: &websocket.Upgrader{
 			ReadBufferSize:  1024,
 			WriteBufferSize: 1024,

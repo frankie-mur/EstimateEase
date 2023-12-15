@@ -1,10 +1,12 @@
 package main
 
+import "log"
+
 func main() {
 	srv := NewServer()
 
 	err := srv.ListenAndServe()
 	if err != nil {
-		panic("cannot start server")
+		log.Fatalf("cannot start server: %v", err)
 	}
 }
