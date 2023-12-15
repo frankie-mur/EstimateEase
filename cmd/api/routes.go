@@ -121,6 +121,10 @@ func (s *Server) connectToRoom(w http.ResponseWriter, r *http.Request) {
 
 	//add the subscriber to the room
 	room.Pub.AddSubscriber(sub)
+
+	//Update user count for all subscribers
+	htmlResponse := fmt.Sprintf("<div id=\"room-count\">%d</div>", len(sub.Publisher.Subs))
+	go sub.Publisher.Broadcast(htmlResponse)
 }
 
 func (s *Server) home(w http.ResponseWriter, r *http.Request) {

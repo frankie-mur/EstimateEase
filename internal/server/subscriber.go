@@ -19,7 +19,7 @@ type SubscriberList map[*Subscriber]bool
 
 type Subscriber struct {
 	conn      *websocket.Conn
-	publisher *Publisher
+	Publisher *Publisher
 	// egress is used to avoid concurrent writes on websocket conn
 	egress chan []byte
 	name   string
@@ -28,10 +28,11 @@ type Subscriber struct {
 func NewSubscriber(conn *websocket.Conn, room *Room, displayName string) *Subscriber {
 	sub := &Subscriber{
 		conn:      conn,
-		publisher: room.Pub,
+		Publisher: room.Pub,
 		egress:    make(chan []byte),
 		name:      displayName,
 	}
+
 	//Start subscriber background processes to
 	//read and write messages
 	//room is passed into ReadMessage as needed to broadcast messages to all subscribers
@@ -52,7 +53,7 @@ func NewSubscriber(conn *websocket.Conn, room *Room, displayName string) *Subscr
 func (s *Subscriber) ReadMessage(room *Room) {
 	defer func() {
 		// clean up connection
-		s.publisher.RemoveSubscriber(s)
+		s.Publisher.RemoveSubscriber(s)
 	}()
 	if err := s.conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
 		fmt.Println(err)
@@ -86,13 +87,9 @@ func (s *Subscriber) ReadMessage(room *Room) {
 		//NOTE: this is concurrent safe
 		room.VoteMap.Update(s.name, event.Payload)
 
-		//Broadcast the updated vote map to all subscribers
-		go func() {
-			err := s.publisher.Broadcast(room.VoteMap)
-			if err != nil {
-				log.Printf("failed to broadcast message: %v", err)
-			}
-		}()
+		htmlResponse := buildHTMLResponse(room)
+
+		go s.Publisher.Broadcast(htmlResponse)
 	}
 }
 
@@ -102,7 +99,7 @@ func (s *Subscriber) ReadMessage(room *Room) {
 // 3. Sends messages to the client
 func (s *Subscriber) WriteMessages() {
 	defer func() {
-		s.publisher.RemoveSubscriber(s)
+		s.Publisher.RemoveSubscriber(s)
 	}()
 	ticker := time.NewTicker(pingInterval)
 
@@ -136,4 +133,34 @@ func (s *Subscriber) WriteMessages() {
 func (s *Subscriber) pongHandler(pongMsg string) error {
 	log.Println("pong")
 	return s.conn.SetReadDeadline(time.Now().Add(pongWait))
+}
+
+// This function is used to build the HTML response for the room page
+// Updating the vote map
+func buildHTMLResponse(room *Room) string {
+	sortedNames := room.VoteMap.SortedNames()
+
+	trData := ""
+	for _, name := range sortedNames {
+		trData += fmt.Sprintf("<tr><td> %v </td><td> %v </td></tr>", name, room.VoteMap.VoteMap[name])
+	}
+
+	return fmt.Sprintf(`
+	<div id="room-data">
+	<div class="overflow-x-auto">
+     <table class="table table-zebra">
+     <!-- head -->
+     <thead>
+      <tr>
+        <th>Name</th>
+        <th>Vote</th>
+      </tr>
+     </thead>
+      <tbody>
+       %v
+      </tbody>
+     </table>
+   </div> 
+   <div>
+   `, trData)
 }
