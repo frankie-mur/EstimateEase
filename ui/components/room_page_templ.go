@@ -89,7 +89,7 @@ func RoomPage(pageData data.RoomPageData) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</script></head><body class=\"text-text-secondary font-sans leading-normal tracking-normal\"><div class=\"container mx-auto mt-10\"><h1 class=\"text-3xl mb-6\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</script></head><body class=\"font-sans\"><div class=\"min-h-screen flex items-center justify-center\"><div class=\"text-center\"><h1 class=\"text-3xl mb-6\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -112,7 +112,7 @@ func RoomPage(pageData data.RoomPageData) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p></div><div hx-ext=\"ws\" ws-connect=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div hx-ext=\"ws\" ws-connect=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -120,7 +120,7 @@ func RoomPage(pageData data.RoomPageData) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><div id=\"room-data\"></div><form id=\"form\" ws-send><input type=\"hidden\" id=\"payload\" name=\"payload\" value=\"1\" readonly> <button class=\"btn\" type=\"submit\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><div id=\"room-data\"></div><div class=\"flex space-x-4\"><form id=\"form1\" ws-send class=\"rounded-md bg-blue-500\"><input type=\"hidden\" id=\"payload1\" name=\"payload\" value=\"1\" readonly> <button class=\"btn text-black\" type=\"submit\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -129,7 +129,7 @@ func RoomPage(pageData data.RoomPageData) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button></form><form id=\"form\" ws-send><input type=\"hidden\" id=\"payload\" name=\"payload\" value=\"3\" readonly> <button class=\"btn\" type=\"submit\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button></form><form id=\"form3\" ws-send class=\"rounded-md bg-green-500 p-2\"><input type=\"hidden\" id=\"payload3\" name=\"payload\" value=\"3\" readonly> <button class=\"btn text-black\" type=\"submit\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -138,7 +138,7 @@ func RoomPage(pageData data.RoomPageData) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button></form><form id=\"form\" ws-send><input type=\"hidden\" id=\"payload\" name=\"payload\" value=\"5\" readonly> <button class=\"btn\" type=\"submit\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button></form><form id=\"form5\" ws-send class=\"rounded-md bg-yellow-500 p-2\"><input type=\"hidden\" id=\"payload5\" name=\"payload\" value=\"5\" readonly> <button class=\"btn text-black\" type=\"submit\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -147,7 +147,7 @@ func RoomPage(pageData data.RoomPageData) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button></form><form id=\"form\" ws-send><input type=\"hidden\" id=\"payload\" name=\"payload\" value=\"8\" readonly> <button class=\"btn\" type=\"submit\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button></form><form id=\"form8\" ws-send class=\"rounded-md bg-red-500 p-2\"><input type=\"hidden\" id=\"payload8\" name=\"payload\" value=\"8\" readonly> <button class=\"btn text-black\" type=\"submit\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -156,7 +156,7 @@ func RoomPage(pageData data.RoomPageData) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button></form><div id=\"room-count\"></div></div></body></html>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button></form></div><div id=\"room-count\"></div></div></div></div></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

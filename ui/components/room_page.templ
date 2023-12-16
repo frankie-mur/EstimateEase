@@ -21,32 +21,38 @@ templ RoomPage(pageData data.RoomPageData) {
         <!-- Include HTMX Websocket -->
         <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
     </head>
-    <body class="text-text-secondary font-sans leading-normal tracking-normal">
+   <body class="font-sans">
 
-    <div class="container mx-auto mt-10">
+<div class="min-h-screen flex items-center justify-center">
+    <div class="text-center">
         <h1 class="text-3xl mb-6">Room Session</h1>
         <p class="text-lg mb-6">Room Name: { pageData.Room.RoomName } </p>
+
+        <div hx-ext="ws" ws-connect={ fmt.Sprintf("/ws/room/%v/%v", pageData.Room.Id, pageData.DisplayName)}>
+            <div id="room-data"></div>
+               <div class="flex space-x-4">
+                <form id="form1" ws-send class="rounded-md bg-blue-500 p-2">
+                    <input type="hidden" id="payload1" name="payload" value="1" readonly/> 
+                    <button class="btn text-black" type="submit"> 1 </button>
+                </form>
+                <form id="form3" ws-send class="rounded-md bg-green-500 p-2">
+                    <input type="hidden" id="payload3" name="payload" value="3" readonly/> 
+                    <button class="btn text-black" type="submit"> 3 </button>
+                </form>
+                <form id="form5" ws-send class="rounded-md bg-yellow-500 p-2">
+                    <input type="hidden" id="payload5" name="payload" value="5" readonly/> 
+                    <button class="btn text-black" type="submit"> 5 </button>
+                </form>
+                <form id="form8" ws-send class="rounded-md bg-red-500 p-2">
+                    <input type="hidden" id="payload8" name="payload" value="8" readonly/> 
+                    <button class="btn text-black" type="submit"> 8 </button>
+                </form>
+            </div>
+            <div id="room-count"></div>
+        </div>
     </div>
-      <div hx-ext="ws" ws-connect={ fmt.Sprintf("/ws/room/%v/%v", pageData.Room.Id, pageData.DisplayName)}>
-          <div id="room-data"></div>
-          <form id="form" ws-send>
-              <input type="hidden" id="payload" name="payload" value="1" readonly/> 
-              <button class="btn" type="submit"> 1 </button>
-          </form>
-           <form id="form" ws-send>
-              <input type="hidden" id="payload" name="payload" value="3" readonly/> 
-              <button class="btn" type="submit"> 3 </button>
-          </form>
-           <form id="form" ws-send>
-              <input type="hidden" id="payload" name="payload" value="5" readonly/> 
-              <button class="btn" type="submit"> 5 </button>
-          </form>
-           <form id="form" ws-send>
-              <input type="hidden" id="payload" name="payload" value="8" readonly/> 
-              <button class="btn" type="submit"> 8 </button>
-          </form>
-          <div id="room-count"></div>
-      </div>
-    </body>
+</div>
+
+</body>
     </html>
 }
