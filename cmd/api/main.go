@@ -13,7 +13,7 @@ import (
 func main() {
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
 
-	newServer := &Server{
+	newServer := &Application{
 		port:   port,
 		logger: slog.New(slog.NewTextHandler(os.Stdout, nil)),
 		upgrader: &websocket.Upgrader{
@@ -23,7 +23,7 @@ func main() {
 		rooms: make(server.RoomsList),
 	}
 
-	srv := NewServer(newServer)
+	srv := newApplication(newServer)
 
 	err := srv.ListenAndServe()
 	if err != nil {

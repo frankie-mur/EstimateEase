@@ -9,7 +9,7 @@ templ RoomPage(pageData data.RoomPageData) {
     <head>
         <meta charset="UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>Room Session</title>
+        <title>EstimateEase</title>
 
         <!-- Include DaisyUI CSS -->
         <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
@@ -22,11 +22,11 @@ templ RoomPage(pageData data.RoomPageData) {
         <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
     </head>
    <body class="font-sans">
+    @nav()
 
-<div class="min-h-screen flex items-center justify-center">
+<div class="flex items-center justify-center">
     <div class="text-center">
-        <h1 class="text-3xl mb-6">Room Session</h1>
-        <p class="text-lg mb-6">Room Name: { pageData.Room.RoomName } </p>
+        <h1 class="text-lg mb-6">Room Name: { pageData.Room.RoomName } </h1>
 
         <div hx-ext="ws" ws-connect={ fmt.Sprintf("/ws/room/%v/%v", pageData.Room.Id, pageData.DisplayName)}>
             <div id="room-data"></div>
@@ -52,7 +52,7 @@ templ RoomPage(pageData data.RoomPageData) {
         </div>
     </div>
 </div>
-
+@footer()
 </body>
     </html>
 }

@@ -1,5 +1,3 @@
-# Simple Makefile for a Go project
-
 # Build the application
 all: build
 
@@ -9,7 +7,10 @@ build:
 
 # Run the application
 run:
-	@go run cmd/api/main.go
+	@echo "Genreting the templ files..."
+	@templ generate
+	@echo "Running the app..."
+	@go run ./cmd/api/
 
 # Create DB container
 docker-run:
@@ -57,3 +58,21 @@ watch:
 	fi
 
 .PHONY: all build run test clean
+
+# ==================================================================================== #
+# QUALITY CONTROL
+# ==================================================================================== #
+
+## audit: tidy dependencies and format, vet and test all code
+.PHONY: audit
+audit:
+	@echo 'Tidying and verifying module dependencies...'
+	go mod tidy
+	go mod verify
+	@echo 'Formatting code...'
+	go fmt ./...
+	@echo 'Vetting code...'
+	go vet ./...
+	staticcheck ./...
+	@echo 'Running tests...'
+	go test -race -vet=off ./...

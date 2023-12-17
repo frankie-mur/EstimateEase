@@ -6,7 +6,7 @@ import (
 )
 
 // Helper function that will marshal data to json and write back with provided headers and status code
-func (s *Server) writeJSON(
+func (a *Application) writeJSON(
 	w http.ResponseWriter,
 	status int,
 	data any,

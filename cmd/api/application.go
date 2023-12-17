@@ -12,7 +12,7 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 )
 
-type Server struct {
+type Application struct {
 	port       int
 	logger     *slog.Logger
 	upgrader   *websocket.Upgrader
@@ -20,11 +20,11 @@ type Server struct {
 	sync.Mutex // guards
 }
 
-func NewServer(newServer *Server) *http.Server {
+func newApplication(newApp *Application) *http.Server {
 	// Declare Server config
 	srv := &http.Server{
-		Addr:         fmt.Sprintf(":%d", newServer.port),
-		Handler:      newServer.RegisterRoutes(),
+		Addr:         fmt.Sprintf(":%d", newApp.port),
+		Handler:      newApp.RegisterRoutes(),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
@@ -33,19 +33,19 @@ func NewServer(newServer *Server) *http.Server {
 	return srv
 }
 
-func (s *Server) addRoom(room *server.Room) {
-	s.Lock()
-	defer s.Unlock()
-	s.rooms[room] = true
+func (a *Application) addRoom(room *server.Room) {
+	a.Lock()
+	defer a.Unlock()
+	a.rooms[room] = true
 }
 
-func (s *Server) removeRoom(room *server.Room) {
-	s.Lock()
-	defer s.Unlock()
+func (a *Application) removeRoom(room *server.Room) {
+	a.Lock()
+	defer a.Unlock()
 
 	//Check if room exists
-	if _, ok := s.rooms[room]; ok {
-		delete(s.rooms, room)
+	if _, ok := a.rooms[room]; ok {
+		delete(a.rooms, room)
 	}
 
 }

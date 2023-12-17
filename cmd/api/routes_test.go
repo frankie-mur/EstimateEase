@@ -15,9 +15,9 @@ func TestCreateRoom(t *testing.T) {
 		req.Form = url.Values{"roomName": {"Test Room"}}
 
 		w := httptest.NewRecorder()
-		s := &Server{rooms: make(server.RoomsList)}
+		a := &Application{rooms: make(server.RoomsList)}
 
-		s.createRoom(w, req)
+		a.createRoom(w, req)
 
 		if w.Code != http.StatusCreated {
 			t.Errorf("Expected status Created but got %v", w.Code)
@@ -28,8 +28,8 @@ func TestCreateRoom(t *testing.T) {
 		req := httptest.NewRequest(http.MethodPost, "/room", nil)
 
 		w := httptest.NewRecorder()
-		s := &Server{rooms: make(server.RoomsList)}
-		s.createRoom(w, req)
+		a := &Application{rooms: make(server.RoomsList)}
+		a.createRoom(w, req)
 
 		if w.Code != http.StatusBadRequest {
 			t.Errorf("Expected status BadRequest but got %v", w.Code)
@@ -40,18 +40,18 @@ func TestCreateRoom(t *testing.T) {
 
 func TestJoinRoom(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/room/join", nil)
-	s := &Server{rooms: make(server.RoomsList)}
+	a := &Application{rooms: make(server.RoomsList)}
 
 	t.Run("valid room ID and display name", func(t *testing.T) {
 		w := httptest.NewRecorder()
 
 		newRoom := server.NewRoom("Test Room")
 		roomId := newRoom.Id
-		s.addRoom(newRoom)
+		a.addRoom(newRoom)
 		req.Form = url.Values{"roomID": {roomId},
 			"displayName": {"John"}}
 
-		s.joinRoom(w, req)
+		a.joinRoom(w, req)
 
 		if w.Code != http.StatusFound {
 			t.Errorf("Expected redirect status but got %v", w.Code)
@@ -62,7 +62,7 @@ func TestJoinRoom(t *testing.T) {
 		w := httptest.NewRecorder()
 		req.Form = url.Values{"displayName": {"John"}}
 
-		s.joinRoom(w, req)
+		a.joinRoom(w, req)
 
 		if w.Code != http.StatusBadRequest {
 			t.Errorf("Expected bad request status but got %v", w.Code)
@@ -74,7 +74,7 @@ func TestJoinRoom(t *testing.T) {
 		req.Form = url.Values{"roomID": {"invalid"},
 			"displayName": {"John"}}
 
-		s.joinRoom(w, req)
+		a.joinRoom(w, req)
 
 		if w.Code != http.StatusNotFound {
 			t.Errorf("Expected bad request status but got %v", w.Code)
@@ -85,7 +85,7 @@ func TestJoinRoom(t *testing.T) {
 		w := httptest.NewRecorder()
 		req.Form = url.Values{"roomID": {"123e4567-e89b-12d3-a456-426614174000"}}
 
-		s.joinRoom(w, req)
+		a.joinRoom(w, req)
 
 		if w.Code != http.StatusBadRequest {
 			t.Errorf("Expected bad request status but got %v", w.Code)
@@ -97,7 +97,7 @@ func TestJoinRoom(t *testing.T) {
 		req.Form = url.Values{"roomID": {"123e4567-e89b-12d3-a456-426614174000"},
 			"displayName": {"John"}}
 
-		s.joinRoom(w, req)
+		a.joinRoom(w, req)
 
 		if w.Code != http.StatusNotFound {
 			t.Errorf("Expected not found status but got %v", w.Code)
