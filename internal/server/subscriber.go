@@ -1,7 +1,10 @@
 package server
 
 import (
+	"bytes"
+	"context"
 	"encoding/json"
+	"estimate-ease/ui/components"
 	"fmt"
 	"log"
 	"time"
@@ -81,15 +84,25 @@ func (s *Subscriber) ReadMessage(room *Room) {
 			break
 		}
 
-		fmt.Printf("msgType: %v payload: %v\n", msgType, string(payload))
-		fmt.Printf("Event: %v\n", event)
 		//Update the user vote map for that specific user
 		//NOTE: this is concurrent safe
 		room.VoteMap.Update(s.name, event.Payload)
 
-		htmlResponse := buildHTMLResponse(*room)
-
-		go s.Publisher.Broadcast(htmlResponse)
+		//Render voteMap component and broadcast to all subscribers
+		voteMap := components.VoteMapData{
+			VoteMap: room.VoteMap.VoteMap,
+		}
+		var buf bytes.Buffer
+		data, err := RenderComponentToBuffer(
+			components.VotingGrid(voteMap),
+			context.TODO(),
+			&buf,
+		)
+		if err != nil {
+			fmt.Print("Error rendering component: ", err)
+			break
+		}
+		go s.Publisher.Broadcast(data)
 	}
 }
 
@@ -133,34 +146,4 @@ func (s *Subscriber) WriteMessages() {
 func (s *Subscriber) pongHandler(pongMsg string) error {
 	log.Println("pong")
 	return s.conn.SetReadDeadline(time.Now().Add(pongWait))
-}
-
-// This function is used to build the HTML response for the room page
-// Updating the vote map
-func buildHTMLResponse(room Room) string {
-	sortedNames := room.VoteMap.SortedNames()
-
-	trData := ""
-	for _, name := range sortedNames {
-		trData += fmt.Sprintf("<tr><td> %v </td><td> %v </td></tr>", name, room.VoteMap.VoteMap[name])
-	}
-
-	return fmt.Sprintf(`
-	<div id="room-data">
-	<div class="overflow-x-auto">
-     <table class="table table-zebra">
-     <!-- head -->
-     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Vote</th>
-      </tr>
-     </thead>
-      <tbody>
-       %v
-      </tbody>
-     </table>
-   </div> 
-   <div>
-   `, trData)
 }

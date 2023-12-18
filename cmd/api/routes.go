@@ -1,10 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"estimate-ease/internal/server"
 	"estimate-ease/ui/components"
-	"estimate-ease/ui/data"
 	"fmt"
 	"net/http"
 
@@ -109,8 +109,17 @@ func (a *Application) connectToRoom(w http.ResponseWriter, r *http.Request) {
 	room.Pub.AddSubscriber(sub)
 
 	//Update user count for all subscribers
-	htmlResponse := fmt.Sprintf("<div id=\"room-count\"><div class=\"stats shadow\"></div><div class=\"stat\"><div class=\"stat-title\">Total Users</div><div class=\"stat-value\">%d</div></div></div></div>", len(sub.Publisher.Subs))
-	go sub.Publisher.Broadcast(htmlResponse)
+	numUsers := fmt.Sprintf("%d", (len(room.Pub.Subs)))
+	var buf bytes.Buffer
+	data, err := server.RenderComponentToBuffer(
+		components.Stats(numUsers),
+		r.Context(),
+		&buf,
+	)
+	if err != nil {
+		a.serverErrorResponse(w, r, err)
+	}
+	go sub.Publisher.Broadcast(data)
 }
 
 func (a *Application) homePage(w http.ResponseWriter, r *http.Request) {
@@ -143,8 +152,9 @@ func (a *Application) roomPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	pageData := data.RoomPageData{
-		Room:        room,
+	pageData := components.RoomPageData{
+		RoomName:    room.RoomName,
+		RoomID:      room.Id,
 		DisplayName: displayName,
 	}
 

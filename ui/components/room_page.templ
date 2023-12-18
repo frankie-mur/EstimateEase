@@ -1,9 +1,15 @@
 package components
 
 import "fmt"
-import "estimate-ease/ui/data"
 
-templ RoomPage(pageData data.RoomPageData) {
+// RoomPageData data needed for the room page html template
+type RoomPageData struct {
+	RoomName       string
+	DisplayName string
+	RoomID         string
+}
+
+templ RoomPage(pageData RoomPageData) {
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -26,9 +32,9 @@ templ RoomPage(pageData data.RoomPageData) {
 
 <div class="flex items-center justify-center">
     <div class="text-center">
-        <h1 class="text-lg mb-6">Room Name: { pageData.Room.RoomName } </h1>
+        <h1 class="text-lg mb-6">Room Name: { pageData.RoomName } </h1>
 
-        <div hx-ext="ws" ws-connect={ fmt.Sprintf("/ws/room/%v/%v", pageData.Room.Id, pageData.DisplayName)}>
+        <div hx-ext="ws" ws-connect={ fmt.Sprintf("/ws/room/%v/%v", pageData.RoomID, pageData.DisplayName)}>
             <div id="room-data"></div>
                <div class="flex space-x-4">
                 <form id="form1" ws-send class="rounded-md bg-blue-500 p-2">
@@ -55,4 +61,46 @@ templ RoomPage(pageData data.RoomPageData) {
 @footer()
 </body>
     </html>
+}
+
+type VoteMapData struct {
+	VoteMap map[string]string
+}
+
+templ VotingGrid(voteMap VoteMapData) {
+    <div id="room-data">
+	<div class="overflow-x-auto">
+     <table class="table table-zebra">
+     <!-- head -->
+     <thead>
+      <tr>
+        <th>Name</th>
+        <th>Vote</th>
+      </tr>
+     </thead>
+      <tbody>
+       for name, vote := range voteMap.VoteMap {
+        <tr><td> {name} </td><td> {vote} </td></tr>
+       }
+      </tbody>
+     </table>
+   </div> 
+   <div>
+   </div>
+   </div>
+}
+
+templ Stats(numUsers string) {
+    <div id="room-count">
+        <div class="stats shadow">
+            <div class="stat">
+                <div class="stat-title">
+                    totalUsers
+                </div>
+                <div class="stat-value">
+                    { numUsers }
+                </div>
+            </div>
+        </div>
+    </div>
 }
