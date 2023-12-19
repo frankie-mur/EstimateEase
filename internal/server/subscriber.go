@@ -69,7 +69,7 @@ func (s *Subscriber) ReadMessage(room *Room) {
 	for {
 		var event Event
 
-		msgType, payload, err := s.conn.ReadMessage()
+		_, payload, err := s.conn.ReadMessage()
 
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
@@ -90,7 +90,8 @@ func (s *Subscriber) ReadMessage(room *Room) {
 
 		//Render voteMap component and broadcast to all subscribers
 		voteMap := components.VoteMapData{
-			VoteMap: room.VoteMap.VoteMap,
+			SortedNames: room.VoteMap.sortNames(),
+			VoteMap:     room.VoteMap.VoteMap,
 		}
 		var buf bytes.Buffer
 		data, err := RenderComponentToBuffer(

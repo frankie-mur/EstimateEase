@@ -64,6 +64,7 @@ templ RoomPage(pageData RoomPageData) {
 }
 
 type VoteMapData struct {
+    SortedNames []string
 	VoteMap map[string]string
 }
 
@@ -79,8 +80,8 @@ templ VotingGrid(voteMap VoteMapData) {
       </tr>
      </thead>
       <tbody>
-       for name, vote := range voteMap.VoteMap {
-        <tr><td> {name} </td><td> {vote} </td></tr>
+       for _, name := range voteMap.SortedNames {
+        <tr><td> {name} </td><td> {voteMap.VoteMap[name]} </td></tr>
        }
       </tbody>
      </table>

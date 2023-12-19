@@ -24,16 +24,18 @@ func (v *Votes) Update(name string, vote string) {
 	v.VoteMap[name] = vote
 }
 
-func (v *Votes) SortedNames() []string {
+// Function reurn list of sorted names alphabetically
+func (v *Votes) sortNames() []string {
 	v.Mutex.Lock()
 	defer v.Mutex.Unlock()
 
 	// Extract keys from map
-	keys := make([]string, 0, len(v.VoteMap))
+	sortedNames := make([]string, 0, len(v.VoteMap))
 	for k := range v.VoteMap {
-		keys = append(keys, k)
+		sortedNames = append(sortedNames, k)
 	}
 	// Sort keys
-	sort.Strings(keys)
-	return keys
+	sort.Strings(sortedNames)
+
+	return sortedNames
 }

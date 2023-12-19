@@ -181,7 +181,8 @@ func RoomPage(pageData RoomPageData) templ.Component {
 }
 
 type VoteMapData struct {
-	VoteMap map[string]string
+	SortedNames []string
+	VoteMap     map[string]string
 }
 
 func VotingGrid(voteMap VoteMapData) templ.Component {
@@ -228,7 +229,7 @@ func VotingGrid(voteMap VoteMapData) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		for name, vote := range voteMap.VoteMap {
+		for _, name := range voteMap.SortedNames {
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<tr><td>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -242,7 +243,7 @@ func VotingGrid(voteMap VoteMapData) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var20 string = vote
+			var templ_7745c5c3_Var20 string = voteMap.VoteMap[name]
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
