@@ -55,6 +55,7 @@ templ RoomPage(pageData RoomPageData) {
                 </form>
             </div>
             <div id="room-count"></div>
+            @showVotesBtn()
         </div>
     </div>
 </div>
@@ -66,6 +67,7 @@ templ RoomPage(pageData RoomPageData) {
 type VoteMapData struct {
     SortedNames []string
 	VoteMap map[string]string
+    ShowVotes bool
 }
 
 templ VotingGrid(voteMap VoteMapData) {
@@ -81,7 +83,14 @@ templ VotingGrid(voteMap VoteMapData) {
      </thead>
       <tbody>
        for _, name := range voteMap.SortedNames {
-        <tr><td> {name} </td><td> {voteMap.VoteMap[name]} </td></tr>
+        <tr>
+            <td> {name} </td>
+            if  voteMap.ShowVotes{
+                <td> {voteMap.VoteMap[name]} </td>
+            } else {
+                <td> ✅ </td>
+            }
+       </tr>
        }
       </tbody>
      </table>
@@ -96,7 +105,7 @@ templ Stats(numUsers string) {
         <div class="stats shadow">
             <div class="stat">
                 <div class="stat-title">
-                    totalUsers
+                    User Count
                 </div>
                 <div class="stat-value">
                     { numUsers }
@@ -104,4 +113,11 @@ templ Stats(numUsers string) {
             </div>
         </div>
     </div>
+}
+
+templ showVotesBtn() {
+    <form id="show-votes" ws-send>
+        <input type="hidden" id="payloadshowvotes" name="payload" value="show-votes" readonly/> 
+        <button class="btn btn-wide" type="submit"> Show Votes </button>
+    </form>
 }

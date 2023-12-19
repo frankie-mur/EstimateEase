@@ -84,14 +84,21 @@ func (s *Subscriber) ReadMessage(room *Room) {
 			break
 		}
 
+		fmt.Printf("Recieved message: %v\n", event)
+
 		//Update the user vote map for that specific user
-		//NOTE: this is concurrent safe
-		room.VoteMap.Update(s.name, event.Payload)
+		showVotes := false
+		if event.Payload == "show-votes" {
+			showVotes = true
+		} else {
+			room.VoteMap.Update(s.name, event.Payload)
+		}
 
 		//Render voteMap component and broadcast to all subscribers
 		voteMap := components.VoteMapData{
 			SortedNames: room.VoteMap.sortNames(),
 			VoteMap:     room.VoteMap.VoteMap,
+			ShowVotes:   showVotes,
 		}
 		var buf bytes.Buffer
 		data, err := RenderComponentToBuffer(
