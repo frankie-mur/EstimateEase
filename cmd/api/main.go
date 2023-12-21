@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -13,17 +14,21 @@ import (
 func main() {
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
 
-	newServer := &Application{
+	app := &Application{
 		port:   port,
 		logger: slog.New(slog.NewTextHandler(os.Stdout, nil)),
 		upgrader: &websocket.Upgrader{
 			ReadBufferSize:  1024,
 			WriteBufferSize: 1024,
 		},
-		rooms: make(server.RoomsList),
+		roomList: server.NewRoomList(),
 	}
 
-	srv := newApplication(newServer)
+	srv := newApplication(app)
+
+	//goroutine that check for idle rooms and remove them
+	//for a given time interval
+	go app.checkIdleRooms(5 * time.Minute)
 
 	err := srv.ListenAndServe()
 	if err != nil {

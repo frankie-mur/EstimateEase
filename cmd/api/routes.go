@@ -65,7 +65,7 @@ func (a *Application) joinRoom(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Check that the room exists
-	_, ok := a.rooms.Is(id)
+	_, ok := a.roomList.Is(id)
 	if !ok {
 		a.roomDoesNotExistResponse(w, r)
 		return
@@ -90,7 +90,7 @@ func (a *Application) connectToRoom(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Check that the room exists
-	room, ok := a.rooms.Is(id)
+	room, ok := a.roomList.Is(id)
 	if !ok {
 		a.roomDoesNotExistResponse(w, r)
 		return
@@ -112,7 +112,7 @@ func (a *Application) connectToRoom(w http.ResponseWriter, r *http.Request) {
 	numUsers := fmt.Sprintf("%d", (len(room.Pub.Subs)))
 	var buf bytes.Buffer
 	data, err := server.RenderComponentToBuffer(
-		components.Stats(numUsers),
+		components.Stats("Total Users", numUsers),
 		r.Context(),
 		&buf,
 	)
@@ -123,7 +123,7 @@ func (a *Application) connectToRoom(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *Application) homePage(w http.ResponseWriter, r *http.Request) {
-	c := components.HomePage()
+	c := components.HomePage(fmt.Sprintf("%d", len(a.roomList.Rooms)))
 	err := c.Render(r.Context(), w)
 	if err != nil {
 		a.serverErrorResponse(w, r, err)
@@ -146,7 +146,7 @@ func (a *Application) roomPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Check that the room exists
-	room, ok := a.rooms.Is(id)
+	room, ok := a.roomList.Is(id)
 	if !ok {
 		a.roomDoesNotExistResponse(w, r)
 		return

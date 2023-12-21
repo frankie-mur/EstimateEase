@@ -1,6 +1,9 @@
 package server
 
 import (
+	"fmt"
+	"sync"
+
 	"github.com/teris-io/shortid"
 )
 
@@ -16,7 +19,10 @@ type Room struct {
 	VoteMap  *Votes     `json:"_"`
 }
 
-type RoomsList map[*Room]bool
+type RoomList struct {
+	Rooms map[*Room]bool
+	sync.RWMutex
+}
 
 func NewRoom(name string) *Room {
 	return &Room{
@@ -27,14 +33,22 @@ func NewRoom(name string) *Room {
 	}
 }
 
+func NewRoomList() *RoomList {
+	return &RoomList{
+		Rooms: make(map[*Room]bool),
+	}
+}
+
 func generateId() string {
 	// generate a short unique id
 	return shortid.MustGenerate()
 }
 
-func (r *RoomsList) Is(id string) (*Room, bool) {
+func (r *RoomList) Is(id string) (*Room, bool) {
 	//Need to dereference the roomList to iterate over
-	for room := range *r {
+	fmt.Printf("Looking for room with id %s", id)
+	for room := range r.Rooms {
+		fmt.Printf("Room % v", room)
 		if room.Id == id {
 			return room, true
 		}

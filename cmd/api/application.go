@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
-	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -13,11 +12,10 @@ import (
 )
 
 type Application struct {
-	port       int
-	logger     *slog.Logger
-	upgrader   *websocket.Upgrader
-	rooms      server.RoomsList
-	sync.Mutex // guards
+	port     int
+	logger   *slog.Logger
+	upgrader *websocket.Upgrader
+	roomList *server.RoomList
 }
 
 func newApplication(newApp *Application) *http.Server {
@@ -34,18 +32,17 @@ func newApplication(newApp *Application) *http.Server {
 }
 
 func (a *Application) addRoom(room *server.Room) {
-	a.Lock()
-	defer a.Unlock()
-	a.rooms[room] = true
+	a.roomList.Lock()
+	defer a.roomList.Unlock()
+	a.roomList.Rooms[room] = true
 }
 
 func (a *Application) removeRoom(room *server.Room) {
-	a.Lock()
-	defer a.Unlock()
+	a.roomList.Lock()
+	defer a.roomList.Unlock()
 
 	//Check if room exists
-	if _, ok := a.rooms[room]; ok {
-		delete(a.rooms, room)
+	if _, ok := a.roomList.Rooms[room]; ok {
+		delete(a.roomList.Rooms, room)
 	}
-
 }
