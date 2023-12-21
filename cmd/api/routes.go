@@ -13,6 +13,9 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
+// TOOD: make this variable dynamic
+var HOST = "localhost:8080"
+
 func (a *Application) RegisterRoutes() http.Handler {
 	r := chi.NewRouter()
 	r.Use(middleware.DefaultLogger)
@@ -22,6 +25,8 @@ func (a *Application) RegisterRoutes() http.Handler {
 	r.Post("/room/join", a.joinRoom)
 	r.Get("/ws/room/{roomID}/{displayName}", a.connectToRoom)
 	r.Get("/room/{roomID}/{displayName}", a.roomPage)
+	r.Get("/room/{roomID}", a.displayNamePage)
+	r.Post("/room/join/user", a.getDisplayNameAndRoute)
 
 	return r
 }
@@ -156,6 +161,7 @@ func (a *Application) roomPage(w http.ResponseWriter, r *http.Request) {
 		RoomName:    room.RoomName,
 		RoomID:      room.Id,
 		DisplayName: displayName,
+		RoomURL:     fmt.Sprintf("%v/room/%v", HOST, room.Id),
 	}
 
 	c := components.RoomPage(pageData)
@@ -163,4 +169,25 @@ func (a *Application) roomPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		a.serverErrorResponse(w, r, err)
 	}
+}
+
+func (a *Application) displayNamePage(w http.ResponseWriter, r *http.Request) {
+	roomId := chi.URLParam(r, "roomID")
+	c := components.DisplayNamePage(roomId)
+	err := c.Render(r.Context(), w)
+	if err != nil {
+		a.serverErrorResponse(w, r, err)
+		return
+	}
+}
+
+func (a *Application) getDisplayNameAndRoute(w http.ResponseWriter, r *http.Request) {
+	displayName := r.FormValue("displayName")
+	roomID := r.FormValue("roomID")
+
+	if displayName == "" {
+		a.badRequestResponse(w, r, errors.New("invalid display name"))
+	}
+	url := fmt.Sprintf("/room/%v/%v", roomID, displayName)
+	http.Redirect(w, r, url, http.StatusFound)
 }

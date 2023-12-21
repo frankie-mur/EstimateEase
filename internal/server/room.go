@@ -45,8 +45,6 @@ func generateId() string {
 }
 
 func (r *RoomList) Is(id string) (*Room, bool) {
-	//Need to dereference the roomList to iterate over
-	fmt.Printf("Looking for room with id %s", id)
 	for room := range r.Rooms {
 		fmt.Printf("Room % v", room)
 		if room.Id == id {

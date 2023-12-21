@@ -1,0 +1,30 @@
+package components
+
+templ DisplayNamePage(roomID string) {
+    @Base() {
+          <div class="container mx-auto p-8 mt-8">
+                <h2 class="text-3xl font-bold mb-6">Please enter a display name:</h2>
+                <form action="/room/join/user" method="POST" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <input
+                        type="text"
+                        id="displayName"
+                        name="displayName"
+                        placeholder="..."
+                        class="px-5 py-3 border rounded-md text-lg"
+                        required
+                    />
+                     <input
+                        type="hidden"
+                        id="roomID"
+                        name="roomID"
+                        value={roomID}
+                    />
+                    
+                    <div class="md:col-span-2">
+                        <button type="submit" class="bg-green-600 text-white px-6 py-3 rounded-md w-full md:w-auto">Join Room</button>
+                    </div>
+                </form>
+                
+        </div>
+    }
+}
