@@ -1,6 +1,14 @@
-# Project estimate-ease
+# Project EstimateEase
 
-One Paragraph of project description goes here
+EstimateEase is a web application that allows users to estimate the time it will take to complete a task. It uses websockets to communicate with the server and client
+
+![Alt text](image.png)
+![Alt text](image-1.png)
+
+## Tech Stack
+
+- **Server**: _Go_, chi, gorilla/websockets
+- **Frontend**: DaisyUI, HTMX, templ
 
 ## Getting Started
 
@@ -9,41 +17,41 @@ These instructions will get you a copy of the project up and running on your loc
 ## MakeFile
 
 run all make commands with clean tests
+
 ```bash
 make all build
 ```
 
 build the application
+
 ```bash
 make build
 ```
 
 run the application
+
 ```bash
 make run
 ```
 
-Create DB container
-```bash
-make docker-run
-```
-
-Shutdown DB container
-```bash
-make docker-down
-```
-
 live reload the application
+
 ```bash
 make watch
 ```
 
 run the test suite
+
 ```bash
 make test
 ```
 
 clean up binary from the last build
+
 ```bash
 make clean
 ```
+
+## Contributions
+
+- Any and all contributions welcome, feel free to reach out
