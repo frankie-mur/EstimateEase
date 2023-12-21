@@ -10,36 +10,40 @@ type RoomPageData struct {
 }
 
 templ RoomPage(pageData RoomPageData) {
-@Base() {
-    <div class="flex items-center justify-center">
-        <div class="text-center">
-            <h1 class="text-lg mb-6">Room Name: { pageData.RoomName } </h1>
+    @Base() {
+        <div class="flex-grow flex items-center justify-center">
+                <div class="text-center p-6 md:p-12 rounded-lg shadow-xl">
+                    <h1 class="text-2xl font-semibold mb-8">Room Name: { pageData.RoomName } </h1>
 
-            <div hx-ext="ws" ws-connect={ fmt.Sprintf("/ws/room/%v/%v", pageData.RoomID, pageData.DisplayName)}>
-                <div id="room-data"></div>
-                <div class="flex space-x-4">
-                    <form id="form1" ws-send class="rounded-md bg-blue-500 p-2">
-                        <input type="hidden" id="payload1" name="payload" value="1" readonly/> 
-                        <button class="btn text-black" type="submit"> 1 </button>
-                    </form>
-                    <form id="form3" ws-send class="rounded-md bg-green-500 p-2">
-                        <input type="hidden" id="payload3" name="payload" value="3" readonly/> 
-                        <button class="btn text-black" type="submit"> 3 </button>
-                    </form>
-                    <form id="form5" ws-send class="rounded-md bg-yellow-500 p-2">
-                        <input type="hidden" id="payload5" name="payload" value="5" readonly/> 
-                        <button class="btn text-black" type="submit"> 5 </button>
-                    </form>
-                    <form id="form8" ws-send class="rounded-md bg-red-500 p-2">
-                        <input type="hidden" id="payload8" name="payload" value="8" readonly/> 
-                        <button class="btn text-black" type="submit"> 8 </button>
-                    </form>
+                    <div hx-ext="ws" ws-connect={ fmt.Sprintf("/ws/room/%v/%v", pageData.RoomID, pageData.DisplayName)}>
+                        <div id="room-data"></div>
+                        <div class="flex flex-wrap gap-6 justify-center">
+                            <!-- Form 1 -->
+                            <form id="form1" ws-send class="rounded-lg bg-blue-500 p-4 shadow-lg">
+                                <input type="hidden" id="payload1" name="payload" value="1" readonly/> 
+                                <button class="btn btn-lg text-white" type="submit"> 1 </button>
+                            </form>
+                            <!-- Form 3 -->
+                            <form id="form3" ws-send class="rounded-lg bg-green-500 p-4 shadow-lg">
+                                <input type="hidden" id="payload3" name="payload" value="3" readonly/> 
+                                <button class="btn btn-lg text-white" type="submit"> 3 </button>
+                            </form>
+                            <!-- Form 5 -->
+                            <form id="form5" ws-send class="rounded-lg bg-yellow-500 p-4 shadow-lg">
+                                <input type="hidden" id="payload5" name="payload" value="5" readonly/> 
+                                <button class="btn btn-lg text-white" type="submit"> 5 </button>
+                            </form>
+                            <!-- Form 8 -->
+                            <form id="form8" ws-send class="rounded-lg bg-red-500 p-4 shadow-lg">
+                                <input type="hidden" id="payload8" name="payload" value="8" readonly/> 
+                                <button class="btn btn-lg text-white" type="submit"> 8 </button>
+                            </form>
+                        </div>
+                        <div id="room-count"></div>
+                        @showVotesBtn()
+                    </div>
                 </div>
-                <div id="room-count"></div>
-                @showVotesBtn()
-            </div>
         </div>
-    </div>
     }
 }
 
@@ -50,9 +54,9 @@ type VoteMapData struct {
 }
 
 templ VotingGrid(voteMap VoteMapData) {
-    <div id="room-data">
-	    <div class="overflow-x-auto">
-            <table class="table table-zebra">       
+    <div id="room-data" class="p-6">
+        <div class="overflow-x-auto">
+            <table class="table table-zebra w-full text-sm md:text-base">       
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -61,27 +65,28 @@ templ VotingGrid(voteMap VoteMapData) {
                 </thead>
                 <tbody>
                     for _, name := range voteMap.SortedNames {
-                    <tr>
-                        <td> {name} </td>
-                        if  voteMap.ShowVotes{
-                            <td> {voteMap.VoteMap[name]} </td>
-                        } else {
-                            <td> ✅ </td>
-                        }
-                    </tr>
-                }
+                        <tr>
+                            <td class="py-2 px-4"> {name} </td>
+                            if  voteMap.ShowVotes {
+                                <td class="py-2 px-4"> {voteMap.VoteMap[name]} </td>
+                            } else {
+                                <td class="py-2 px-4"> ✅ </td>
+                            }
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div> 
     </div>
 }
 
-templ Stats(numUsers string) {
+
+templ Stats(statName string, numUsers string) {
     <div id="room-count">
         <div class="stats shadow">
             <div class="stat">
                 <div class="stat-title">
-                    User Count
+                    { statName }
                 </div>
                 <div class="stat-value">
                     { numUsers }

@@ -38,7 +38,7 @@ func RoomPage(pageData RoomPageData) templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex items-center justify-center\"><div class=\"text-center\"><h1 class=\"text-lg mb-6\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex-grow flex items-center justify-center\"><div class=\"text-center p-6 md:p-12 rounded-lg shadow-xl\"><h1 class=\"text-2xl font-semibold mb-8\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -60,39 +60,75 @@ func RoomPage(pageData RoomPageData) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><div id=\"room-data\"></div><div class=\"flex space-x-4\"><form id=\"form1\" ws-send class=\"rounded-md bg-blue-500 p-2\"><input type=\"hidden\" id=\"payload1\" name=\"payload\" value=\"1\" readonly> <button class=\"btn text-black\" type=\"submit\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><div id=\"room-data\"></div><div class=\"flex flex-wrap gap-6 justify-center\"><!--")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Var5 := `1 `
+			templ_7745c5c3_Var5 := ` Form 1 `
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button></form><form id=\"form3\" ws-send class=\"rounded-md bg-green-500 p-2\"><input type=\"hidden\" id=\"payload3\" name=\"payload\" value=\"3\" readonly> <button class=\"btn text-black\" type=\"submit\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("--><form id=\"form1\" ws-send class=\"rounded-lg bg-blue-500 p-4 shadow-lg\"><input type=\"hidden\" id=\"payload1\" name=\"payload\" value=\"1\" readonly> <button class=\"btn btn-lg text-white\" type=\"submit\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Var6 := `3 `
+			templ_7745c5c3_Var6 := `1 `
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button></form><form id=\"form5\" ws-send class=\"rounded-md bg-yellow-500 p-2\"><input type=\"hidden\" id=\"payload5\" name=\"payload\" value=\"5\" readonly> <button class=\"btn text-black\" type=\"submit\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button></form><!--")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Var7 := `5 `
+			templ_7745c5c3_Var7 := ` Form 3 `
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button></form><form id=\"form8\" ws-send class=\"rounded-md bg-red-500 p-2\"><input type=\"hidden\" id=\"payload8\" name=\"payload\" value=\"8\" readonly> <button class=\"btn text-black\" type=\"submit\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("--><form id=\"form3\" ws-send class=\"rounded-lg bg-green-500 p-4 shadow-lg\"><input type=\"hidden\" id=\"payload3\" name=\"payload\" value=\"3\" readonly> <button class=\"btn btn-lg text-white\" type=\"submit\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Var8 := `8 `
+			templ_7745c5c3_Var8 := `3 `
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button></form><!--")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Var9 := ` Form 5 `
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("--><form id=\"form5\" ws-send class=\"rounded-lg bg-yellow-500 p-4 shadow-lg\"><input type=\"hidden\" id=\"payload5\" name=\"payload\" value=\"5\" readonly> <button class=\"btn btn-lg text-white\" type=\"submit\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Var10 := `5 `
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var10)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button></form><!--")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Var11 := ` Form 8 `
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var11)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("--><form id=\"form8\" ws-send class=\"rounded-lg bg-red-500 p-4 shadow-lg\"><input type=\"hidden\" id=\"payload8\" name=\"payload\" value=\"8\" readonly> <button class=\"btn btn-lg text-white\" type=\"submit\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Var12 := `8 `
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -138,17 +174,17 @@ func VotingGrid(voteMap VoteMapData) templ.Component {
 			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var9 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var9 == nil {
-			templ_7745c5c3_Var9 = templ.NopComponent
+		templ_7745c5c3_Var13 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var13 == nil {
+			templ_7745c5c3_Var13 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"room-data\"><div class=\"overflow-x-auto\"><table class=\"table table-zebra\"><thead><tr><th>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"room-data\" class=\"p-6\"><div class=\"overflow-x-auto\"><table class=\"table table-zebra w-full text-sm md:text-base\"><thead><tr><th>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var10 := `Name`
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var10)
+		templ_7745c5c3_Var14 := `Name`
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var14)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -156,8 +192,8 @@ func VotingGrid(voteMap VoteMapData) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var11 := `Vote`
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var11)
+		templ_7745c5c3_Var15 := `Vote`
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var15)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -166,12 +202,12 @@ func VotingGrid(voteMap VoteMapData) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		for _, name := range voteMap.SortedNames {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<tr><td>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<tr><td class=\"py-2 px-4\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var12 string = name
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
+			var templ_7745c5c3_Var16 string = name
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -180,12 +216,12 @@ func VotingGrid(voteMap VoteMapData) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if voteMap.ShowVotes {
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<td>")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<td class=\"py-2 px-4\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var13 string = voteMap.VoteMap[name]
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
+				var templ_7745c5c3_Var17 string = voteMap.VoteMap[name]
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -194,12 +230,12 @@ func VotingGrid(voteMap VoteMapData) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			} else {
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<td>")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<td class=\"py-2 px-4\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Var14 := `✅ `
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var14)
+				templ_7745c5c3_Var18 := `✅ `
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var18)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -224,7 +260,7 @@ func VotingGrid(voteMap VoteMapData) templ.Component {
 	})
 }
 
-func Stats(numUsers string) templ.Component {
+func Stats(statName string, numUsers string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -232,17 +268,17 @@ func Stats(numUsers string) templ.Component {
 			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var15 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var15 == nil {
-			templ_7745c5c3_Var15 = templ.NopComponent
+		templ_7745c5c3_Var19 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var19 == nil {
+			templ_7745c5c3_Var19 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"room-count\"><div class=\"stats shadow\"><div class=\"stat\"><div class=\"stat-title\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var16 := `User Count`
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var16)
+		var templ_7745c5c3_Var20 string = statName
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -250,8 +286,8 @@ func Stats(numUsers string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var17 string = numUsers
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
+		var templ_7745c5c3_Var21 string = numUsers
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -274,17 +310,17 @@ func showVotesBtn() templ.Component {
 			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var18 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var18 == nil {
-			templ_7745c5c3_Var18 = templ.NopComponent
+		templ_7745c5c3_Var22 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var22 == nil {
+			templ_7745c5c3_Var22 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form id=\"show-votes\" ws-send><input type=\"hidden\" id=\"payloadshowvotes\" name=\"payload\" value=\"show-votes\" readonly> <button class=\"btn btn-wide\" type=\"submit\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var19 := `Show Votes `
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var19)
+		templ_7745c5c3_Var23 := `Show Votes `
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var23)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -1,22 +1,22 @@
 package components
 
-templ HomePage() {
- @Base() {
-        <div class="container mx-auto min-h-screen p-8 mt-8">
+templ HomePage(numRooms string) {
+    @Base() {
+        <div class="container mx-auto p-8 mt-8">
             <!-- Create Room Form -->
-            <div class="mb-8">
-                <h2 class="text-2xl font-bold mb-4">Create a New Room</h2>
-                <form hx-post="/room" hx-target="#result">
-                    <div class="flex space-x-4">
-                        <input
-                            type="text"
-                            id="roomName"
-                            name="roomName"
-                            placeholder="Enter room name"
-                            class="px-4 py-2 border rounded w-64"
-                            required
-                        />
-                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Create Room</button>
+            <div class="mb-12">
+                <h2 class="text-3xl font-bold mb-6">Create a New Room</h2>
+                <form hx-post="/room" hx-target="#result" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <input
+                        type="text"
+                        id="roomName"
+                        name="roomName"
+                        placeholder="Enter room name"
+                        class="px-5 py-3 border rounded-md text-lg"
+                        required
+                    />
+                    <div class="md:col-span-2">
+                        <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-md w-full md:w-auto">Create Room</button>
                     </div>
                 </form>
             </div>
@@ -24,28 +24,29 @@ templ HomePage() {
 
             <!-- Join Room Form -->
             <div>
-                <h2 class="text-2xl font-bold mb-4">Join an Existing Room</h2>
-                <form action="/room/join" method="POST">
-                    <div class="flex space-x-4">
-                        <input
-                            type="text"
-                            id="displayName"
-                            name="displayName"
-                            placeholder="Enter display name"
-                            class="px-4 py-2 border rounded w-64"
-                            required
-                            />
-                        <input
-                            type="text"
-                            id="roomID"
-                            name="roomID"
-                            placeholder="Enter room ID"
-                            class="px-4 py-2 border rounded w-64"
-                            required
-                        />
-                        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Join Room</button>
+                <h2 class="text-3xl font-bold mb-6">Join an Existing Room</h2>
+                <form action="/room/join" method="POST" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <input
+                        type="text"
+                        id="displayName"
+                        name="displayName"
+                        placeholder="Enter display name"
+                        class="px-5 py-3 border rounded-md text-lg"
+                        required
+                    />
+                    <input
+                        type="text"
+                        id="roomID"
+                        name="roomID"
+                        placeholder="Enter room ID"
+                        class="px-5 py-3 border rounded-md text-lg"
+                        required
+                    />
+                    <div class="md:col-span-2">
+                        <button type="submit" class="bg-green-600 text-white px-6 py-3 rounded-md w-full md:w-auto">Join Room</button>
                     </div>
                 </form>
+                @Stats("Live Rooms", numRooms)
             </div>
         </div>
     }

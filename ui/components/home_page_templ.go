@@ -10,7 +10,7 @@ import "context"
 import "io"
 import "bytes"
 
-func HomePage() templ.Component {
+func HomePage(numRooms string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -29,7 +29,7 @@ func HomePage() templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"container mx-auto min-h-screen p-8 mt-8\"><!--")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"container mx-auto p-8 mt-8\"><!--")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -38,7 +38,7 @@ func HomePage() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("--><div class=\"mb-8\"><h2 class=\"text-2xl font-bold mb-4\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("--><div class=\"mb-12\"><h2 class=\"text-3xl font-bold mb-6\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -47,7 +47,7 @@ func HomePage() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h2><form hx-post=\"/room\" hx-target=\"#result\"><div class=\"flex space-x-4\"><input type=\"text\" id=\"roomName\" name=\"roomName\" placeholder=\"Enter room name\" class=\"px-4 py-2 border rounded w-64\" required> <button type=\"submit\" class=\"bg-blue-500 text-white px-4 py-2 rounded\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h2><form hx-post=\"/room\" hx-target=\"#result\" class=\"grid grid-cols-1 md:grid-cols-3 gap-4\"><input type=\"text\" id=\"roomName\" name=\"roomName\" placeholder=\"Enter room name\" class=\"px-5 py-3 border rounded-md text-lg\" required><div class=\"md:col-span-2\"><button type=\"submit\" class=\"bg-blue-600 text-white px-6 py-3 rounded-md w-full md:w-auto\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -65,7 +65,7 @@ func HomePage() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("--><div><h2 class=\"text-2xl font-bold mb-4\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("--><div><h2 class=\"text-3xl font-bold mb-6\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -74,7 +74,7 @@ func HomePage() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h2><form action=\"/room/join\" method=\"POST\"><div class=\"flex space-x-4\"><input type=\"text\" id=\"displayName\" name=\"displayName\" placeholder=\"Enter display name\" class=\"px-4 py-2 border rounded w-64\" required> <input type=\"text\" id=\"roomID\" name=\"roomID\" placeholder=\"Enter room ID\" class=\"px-4 py-2 border rounded w-64\" required> <button type=\"submit\" class=\"bg-green-500 text-white px-4 py-2 rounded\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h2><form action=\"/room/join\" method=\"POST\" class=\"grid grid-cols-1 md:grid-cols-4 gap-4\"><input type=\"text\" id=\"displayName\" name=\"displayName\" placeholder=\"Enter display name\" class=\"px-5 py-3 border rounded-md text-lg\" required> <input type=\"text\" id=\"roomID\" name=\"roomID\" placeholder=\"Enter room ID\" class=\"px-5 py-3 border rounded-md text-lg\" required><div class=\"md:col-span-2\"><button type=\"submit\" class=\"bg-green-600 text-white px-6 py-3 rounded-md w-full md:w-auto\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -83,7 +83,15 @@ func HomePage() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button></div></form></div></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button></div></form>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = Stats("Live Rooms", numRooms).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
