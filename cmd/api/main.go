@@ -8,11 +8,13 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/gorilla/sessions"
 	"github.com/gorilla/websocket"
 )
 
 func main() {
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
+	store := sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
 
 	app := &Application{
 		port:   port,
@@ -21,7 +23,8 @@ func main() {
 			ReadBufferSize:  1024,
 			WriteBufferSize: 1024,
 		},
-		roomList: server.NewRoomList(),
+		roomList:     server.NewRoomList(),
+		sessionStore: store,
 	}
 
 	srv := newApplication(app)

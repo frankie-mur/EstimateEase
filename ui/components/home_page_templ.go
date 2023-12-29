@@ -47,7 +47,7 @@ func HomePage(numRooms string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h2><form hx-post=\"/room\" hx-target=\"#result\" class=\"grid grid-cols-1 md:grid-cols-3 gap-4\"><input type=\"text\" id=\"roomName\" name=\"roomName\" placeholder=\"Enter room name\" class=\"px-5 py-3 border rounded-md text-lg\" required><div class=\"md:col-span-2\"><button type=\"submit\" class=\"bg-blue-600 text-white px-6 py-3 rounded-md w-full md:w-auto\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h2><form action=\"/room\" method=\"POST\" class=\"grid grid-cols-1 md:grid-cols-3 gap-4\"><input type=\"text\" id=\"roomName\" name=\"roomName\" placeholder=\"Enter room name\" class=\"px-5 py-3 border rounded-md text-lg\" required><div class=\"md:col-span-2\"><button type=\"submit\" class=\"bg-blue-600 text-white px-6 py-3 rounded-md w-full md:w-auto\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

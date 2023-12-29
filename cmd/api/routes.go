@@ -45,11 +45,14 @@ func (a *Application) createRoom(w http.ResponseWriter, r *http.Request) {
 	//add to room to the server list of rooms
 	a.addRoom(room)
 
-	err := a.writeJSON(w, http.StatusCreated, room.Id, nil)
+	//Add created flash message to session storage
+	err := a.addSessionFlash(r, w, "estimate-ease", "createdFlash")
 	if err != nil {
 		a.serverErrorResponse(w, r, err)
-		return
 	}
+
+	//route to room page
+	http.Redirect(w, r, fmt.Sprintf("/room/%v", room.Id), http.StatusFound)
 
 }
 
@@ -173,7 +176,14 @@ func (a *Application) roomPage(w http.ResponseWriter, r *http.Request) {
 
 func (a *Application) displayNamePage(w http.ResponseWriter, r *http.Request) {
 	roomId := chi.URLParam(r, "roomID")
-	c := components.DisplayNamePage(roomId)
+	ses, _ := a.sessionStore.Get(r, "estimate-ease")
+	// Get the previous flashes, if any.
+	showFlash := false
+	if flashes := ses.Flashes("createdFlash"); len(flashes) > 0 {
+		showFlash = true
+	}
+	ses.Save(r, w)
+	c := components.DisplayNamePage(roomId, showFlash)
 	err := c.Render(r.Context(), w)
 	if err != nil {
 		a.serverErrorResponse(w, r, err)

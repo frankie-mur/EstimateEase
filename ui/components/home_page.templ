@@ -6,7 +6,7 @@ templ HomePage(numRooms string) {
             <!-- Create Room Form -->
             <div class="mb-12">
                 <h2 class="text-3xl font-bold mb-6">Create a New Room</h2>
-                <form hx-post="/room" hx-target="#result" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <form action="/room" method="POST" class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <input
                         type="text"
                         id="roomName"

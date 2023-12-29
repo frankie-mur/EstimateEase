@@ -137,11 +137,9 @@ func (s *Subscriber) WriteMessages() {
 			if err := s.conn.WriteMessage(websocket.TextMessage, msg); err != nil {
 				log.Printf("failed to send message: %v", err)
 			}
-			log.Printf("message sent")
 
 		//Wait on ticker to avoid subscriber from timing out
 		case <-ticker.C:
-			log.Printf("ping")
 			//Send ping to client
 			if err := s.conn.WriteMessage(websocket.PingMessage, []byte(``)); err != nil {
 				log.Printf("failed to send ping: %v", err)
@@ -152,6 +150,5 @@ func (s *Subscriber) WriteMessages() {
 }
 
 func (s *Subscriber) pongHandler(pongMsg string) error {
-	log.Println("pong")
 	return s.conn.SetReadDeadline(time.Now().Add(pongWait))
 }

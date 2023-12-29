@@ -7,15 +7,17 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gorilla/sessions"
 	"github.com/gorilla/websocket"
 	_ "github.com/joho/godotenv/autoload"
 )
 
 type Application struct {
-	port     int
-	logger   *slog.Logger
-	upgrader *websocket.Upgrader
-	roomList *server.RoomList
+	port         int
+	logger       *slog.Logger
+	upgrader     *websocket.Upgrader
+	roomList     *server.RoomList
+	sessionStore *sessions.CookieStore
 }
 
 func newApplication(newApp *Application) *http.Server {

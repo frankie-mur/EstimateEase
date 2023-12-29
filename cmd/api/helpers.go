@@ -50,3 +50,17 @@ func (app *Application) checkIdleRooms(timeBetweenRequests time.Duration) {
 		}
 	}
 }
+
+func (app *Application) addSessionFlash(r *http.Request, w http.ResponseWriter, sessionName, value string) error {
+	ses, err := app.sessionStore.Get(r, sessionName)
+	if err != nil {
+		return err
+	}
+	ses.AddFlash(nil, value)
+	err = ses.Save(r, w)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
