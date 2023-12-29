@@ -11,7 +11,6 @@ RUN go build -o /app/build/estmate-ease /app/cmd/api/
 FROM alpine:latest 
 COPY --from=builder /app/build/estmate-ease /app/build/estmate-ease
 
-ENV PORT=8080
+ENV PORT=$PORT
 
-EXPOSE 8080
 ENTRYPOINT [ "/app/build/estmate-ease" ]
