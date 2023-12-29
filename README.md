@@ -14,9 +14,11 @@ EstimateEase is a web application that allows users to estimate the time it will
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-## MakeFile
+## CI-CD
+Application is built and deployed on pushes to main via Google Cloud Run 
 
-run all make commands with clean tests
+
+## MakeFile
 
 ```bash
 make all build
