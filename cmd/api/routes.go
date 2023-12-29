@@ -3,10 +3,12 @@ package main
 import (
 	"bytes"
 	"errors"
-	"estimate-ease/internal/server"
-	"estimate-ease/ui/components"
 	"fmt"
 	"net/http"
+
+	"github.com/frankie-mur/EstimateEase/internal/server"
+
+	"github.com/frankie-mur/EstimateEase/ui/components"
 
 	"github.com/go-chi/chi/v5/middleware"
 

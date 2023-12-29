@@ -1,11 +1,12 @@
 package main
 
 import (
-	"estimate-ease/internal/server"
 	"fmt"
 	"log/slog"
 	"net/http"
 	"time"
+
+	"github.com/frankie-mur/EstimateEase/internal/server"
 
 	"github.com/gorilla/sessions"
 	"github.com/gorilla/websocket"

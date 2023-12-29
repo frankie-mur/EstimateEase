@@ -1,4 +1,4 @@
-module estimate-ease
+module github.com/frankie-mur/EstimateEase
 
 go 1.21.0
 

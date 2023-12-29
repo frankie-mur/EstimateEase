@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"estimate-ease/ui/components"
 	"fmt"
 	"log"
 	"time"
+
+	"github.com/frankie-mur/EstimateEase/ui/components"
 
 	"github.com/gorilla/websocket"
 )
