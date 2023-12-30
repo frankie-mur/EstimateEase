@@ -43,10 +43,24 @@ templ RoomPage(pageData RoomPageData) {
                         <div id="room-count"></div>
                         @showVotesBtn()
                     </div>
-                        <h4> Invite Link </h4>
-                        <a class="link link-hover"> { pageData.RoomURL } </a>
+                        <div class="badge badge-primary m-2">Invite Link</div>
+                        <a id="invite" class="link link-info"> { pageData.RoomURL } </a>
+                        <button class="btn btn-accent m-2" onclick="copyLink()">Copy Link</button>
                 </div>
         </div>
+
+        <script>
+            function copyLink() {
+                var link = document.getElementById('invite').text;
+                    navigator.clipboard.writeText(link)
+                    .then(() => {
+                        console.log('Link copied to clipboard');
+                    })
+                    .catch(err => {
+                        console.error('Error in copying text: ', err);
+                    });
+                }
+        </script>
     }
 }
 
