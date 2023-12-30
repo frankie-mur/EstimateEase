@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/frankie-mur/EstimateEase/internal/server"
 
@@ -15,8 +16,7 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-// TOOD: make this variable dynamic
-var HOST = "localhost:8080"
+var HOST = os.Getenv("HOST_URL")
 
 func (a *Application) RegisterRoutes() http.Handler {
 	r := chi.NewRouter()
