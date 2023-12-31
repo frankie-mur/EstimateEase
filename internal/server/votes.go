@@ -17,6 +17,7 @@ func NewVoteMap() *Votes {
 	}
 }
 
+// Update a vote map to add a user with a vote
 func (v *Votes) Update(name string, vote string) {
 	v.Mutex.Lock()
 	defer v.Mutex.Unlock()
@@ -24,8 +25,16 @@ func (v *Votes) Update(name string, vote string) {
 	v.VoteMap[name] = vote
 }
 
+// Remove a user from the vote map
+func (v *Votes) Remove(name string) {
+	v.Mutex.Lock()
+	defer v.Mutex.Unlock()
+
+	delete(v.VoteMap, name)
+}
+
 // Function reurn list of sorted names alphabetically
-func (v *Votes) sortNames() []string {
+func (v *Votes) SortNames() []string {
 	v.Mutex.Lock()
 	defer v.Mutex.Unlock()
 

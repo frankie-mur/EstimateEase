@@ -1,9 +1,11 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"sync"
 
+	"github.com/frankie-mur/EstimateEase/ui/components"
 	"github.com/teris-io/shortid"
 )
 
@@ -12,11 +14,11 @@ import (
 // a Publisher can have one or more subscribers
 // A Room hold the VoteMap used to store all subscribers names maped to their vote
 type Room struct {
-	//TODO: move away from UUID as it is too long and not very human readable/good for url's
-	Id       string     `json:"id"`
-	RoomName string     `json:"roomName"`
-	Pub      *Publisher `json:"-"`
-	VoteMap  *Votes     `json:"_"`
+	Id               string     `json:"id"`
+	RoomName         string     `json:"roomName"`
+	Pub              *Publisher `json:"-"`
+	VoteMap          *Votes     `json:"_"`
+	VotesReveledFlag bool
 }
 
 type RoomList struct {
@@ -46,10 +48,26 @@ func generateId() string {
 
 func (r *RoomList) Is(id string) (*Room, bool) {
 	for room := range r.Rooms {
-		fmt.Printf("Room % v", room)
 		if room.Id == id {
 			return room, true
 		}
 	}
 	return nil, false
+}
+
+// OnSubRemoved will update vote map for all users
+func (r *Room) OnSubRemoved(subscriber *Subscriber) {
+	r.VoteMap.Remove(subscriber.name)
+	//Render voteMap component and broadcast to all subscribers
+	voteMap := components.VoteMapData{
+		SortedNames: r.VoteMap.SortNames(),
+		VoteMap:     r.VoteMap.VoteMap,
+		ShowVotes:   r.VotesReveledFlag,
+	}
+	data, err := RenderComponentToString(components.VotingGrid(voteMap), context.TODO())
+	if err != nil {
+		fmt.Print("Error rendering component: ", err)
+		return
+	}
+	go r.Pub.Broadcast(data)
 }

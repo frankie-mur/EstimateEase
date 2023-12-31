@@ -44,8 +44,5 @@ func (a *Application) removeRoom(room *server.Room) {
 	a.roomList.Lock()
 	defer a.roomList.Unlock()
 
-	//Check if room exists
-	if _, ok := a.roomList.Rooms[room]; ok {
-		delete(a.roomList.Rooms, room)
-	}
+	delete(a.roomList.Rooms, room)
 }
