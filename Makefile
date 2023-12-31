@@ -76,3 +76,7 @@ audit:
 	staticcheck ./...
 	@echo 'Running tests...'
 	go test -race -vet=off ./...
+
+.PHONY: lint
+lint:
+	golangci-lint run

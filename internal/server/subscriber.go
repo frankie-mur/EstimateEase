@@ -1,7 +1,6 @@
 package server
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -27,6 +26,10 @@ type Subscriber struct {
 	// egress is used to avoid concurrent writes on websocket conn
 	egress chan []byte
 	name   string
+}
+
+type SubRemovedCallback interface {
+	OnSubRemoved(subscriber *Subscriber)
 }
 
 func NewSubscriber(conn *websocket.Conn, room *Room, displayName string) *Subscriber {
@@ -85,28 +88,24 @@ func (s *Subscriber) ReadMessage(room *Room) {
 			break
 		}
 
-		fmt.Printf("Recieved message: %v\n", event)
-
-		//Update the user vote map for that specific user
-		showVotes := false
-		if event.Payload == "show-votes" {
-			showVotes = true
-		} else {
+		switch event.Payload {
+		case "show-votes":
+			room.VotesReveledFlag = true
+		default:
+			//Default payload is that of pressing a vote button
 			room.VoteMap.Update(s.name, event.Payload)
 		}
 
 		//Render voteMap component and broadcast to all subscribers
 		voteMap := components.VoteMapData{
-			SortedNames: room.VoteMap.sortNames(),
+			SortedNames: room.VoteMap.SortNames(),
 			VoteMap:     room.VoteMap.VoteMap,
-			ShowVotes:   showVotes,
+			ShowVotes:   room.VotesReveledFlag,
 		}
-		var buf bytes.Buffer
-		data, err := RenderComponentToBuffer(
-			components.VotingGrid(voteMap),
-			context.TODO(),
-			&buf,
-		)
+
+		room.VotesReveledFlag = false
+
+		data, err := RenderComponentToString(components.VotingGrid(voteMap), context.TODO())
 		if err != nil {
 			fmt.Print("Error rendering component: ", err)
 			break

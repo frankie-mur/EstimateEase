@@ -8,6 +8,7 @@ type RoomPageData struct {
 	DisplayName string
 	RoomID         string
     RoomURL string
+    VoteMap VoteMapData
 }
 
 templ RoomPage(pageData RoomPageData) {
@@ -17,7 +18,7 @@ templ RoomPage(pageData RoomPageData) {
                     <h1 class="text-2xl font-semibold mb-8">Room Name: { pageData.RoomName } </h1>
 
                     <div hx-ext="ws" ws-connect={ fmt.Sprintf("/ws/room/%v/%v", pageData.RoomID, pageData.DisplayName)}>
-                        <div id="room-data"></div>
+                        <div id="room-data">@VotingGrid(pageData.VoteMap)</div>
                         <div class="flex flex-wrap gap-6 justify-center">
                             <!-- Form 1 -->
                             <form id="form1" ws-send class="rounded-lg bg-blue-500 p-4 shadow-lg">
@@ -84,9 +85,12 @@ templ VotingGrid(voteMap VoteMapData) {
                     for _, name := range voteMap.SortedNames {
                         <tr>
                             <td class="py-2 px-4"> {name} </td>
-                            if  voteMap.ShowVotes {
-                                <td class="py-2 px-4"> {voteMap.VoteMap[name]} </td>
-                            } else {
+                            switch {
+                                case voteMap.VoteMap[name] == "": 
+                                    <td class="py-2 px-4"> ❌ </td>
+                                case voteMap.ShowVotes:
+                                    <td class="py-2 px-4"> {voteMap.VoteMap[name]} </td>
+                               default: 
                                 <td class="py-2 px-4"> ✅ </td>
                             }
                         </tr>

@@ -1,11 +1,13 @@
 package main
 
 import (
-	"estimate-ease/internal/server"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"testing"
+
+	"github.com/frankie-mur/EstimateEase/internal/server"
+	"github.com/gorilla/sessions"
 )
 
 func TestCreateRoom(t *testing.T) {
@@ -15,11 +17,11 @@ func TestCreateRoom(t *testing.T) {
 		req.Form = url.Values{"roomName": {"Test Room"}}
 
 		w := httptest.NewRecorder()
-		a := &Application{rooms: make(server.RoomsList)}
+		a := &Application{roomList: server.NewRoomList(), sessionStore: sessions.NewCookieStore([]byte("test"))}
 
 		a.createRoom(w, req)
 
-		if w.Code != http.StatusCreated {
+		if w.Code != http.StatusFound {
 			t.Errorf("Expected status Created but got %v", w.Code)
 		}
 	})
@@ -28,7 +30,7 @@ func TestCreateRoom(t *testing.T) {
 		req := httptest.NewRequest(http.MethodPost, "/room", nil)
 
 		w := httptest.NewRecorder()
-		a := &Application{rooms: make(server.RoomsList)}
+		a := &Application{roomList: server.NewRoomList()}
 		a.createRoom(w, req)
 
 		if w.Code != http.StatusBadRequest {
@@ -40,7 +42,7 @@ func TestCreateRoom(t *testing.T) {
 
 func TestJoinRoom(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/room/join", nil)
-	a := &Application{rooms: make(server.RoomsList)}
+	a := &Application{roomList: server.NewRoomList()}
 
 	t.Run("valid room ID and display name", func(t *testing.T) {
 		w := httptest.NewRecorder()

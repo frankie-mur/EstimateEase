@@ -9,7 +9,8 @@ import (
 // while protecting data during writes.
 type Publisher struct {
 	//List of all subscriptions to a producer
-	Subs SubscriberList
+	Subs      SubscriberList
+	callbacks []SubRemovedCallback
 	//Used to lock before editing subs
 	//As maps are not concurrent safe
 	sync.RWMutex
@@ -46,6 +47,11 @@ func (p *Publisher) RemoveSubscriber(sub *Subscriber) {
 		//And delete from subscriber list
 		delete(p.Subs, sub)
 	}
+
+	// Notify all registered callbacks
+	for _, callback := range p.callbacks {
+		callback.OnSubRemoved(sub)
+	}
 }
 
 // Broadcast publishes the given data string to all subscribers.
@@ -56,7 +62,11 @@ func (p *Publisher) Broadcast(data string) {
 	p.Lock()
 	defer p.Unlock()
 
-	for subs, _ := range p.Subs {
+	for subs := range p.Subs {
 		subs.egress <- []byte(data)
 	}
+}
+
+func (p *Publisher) AddCallback(callback SubRemovedCallback) {
+	p.callbacks = append(p.callbacks, callback)
 }

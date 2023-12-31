@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 	"net/http"
@@ -118,18 +117,16 @@ func (a *Application) connectToRoom(w http.ResponseWriter, r *http.Request) {
 	//add the subscriber to the room
 	room.Pub.AddSubscriber(sub)
 
+	//Add a callback for when a sub is removed
+	room.Pub.AddCallback(room)
+
 	//Update user count for all subscribers
 	numUsers := fmt.Sprintf("%d", (len(room.Pub.Subs)))
-	var buf bytes.Buffer
-	data, err := server.RenderComponentToBuffer(
-		components.Stats("Total Users", numUsers),
-		r.Context(),
-		&buf,
-	)
+	statsData, err := server.RenderComponentToString(components.Stats("Total Users", numUsers), r.Context())
 	if err != nil {
 		a.serverErrorResponse(w, r, err)
 	}
-	go sub.Publisher.Broadcast(data)
+	go sub.Publisher.Broadcast(statsData)
 }
 
 func (a *Application) homePage(w http.ResponseWriter, r *http.Request) {
@@ -162,11 +159,21 @@ func (a *Application) roomPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//Update the votemap to add joined user with no vote
+	room.VoteMap.Update(displayName, "")
+
+	voteMap := components.VoteMapData{
+		VoteMap:     room.VoteMap.VoteMap,
+		SortedNames: room.VoteMap.SortNames(),
+		ShowVotes:   room.VotesReveledFlag,
+	}
+
 	pageData := components.RoomPageData{
 		RoomName:    room.RoomName,
 		RoomID:      room.Id,
 		DisplayName: displayName,
 		RoomURL:     fmt.Sprintf("%v/room/%v", HOST, room.Id),
+		VoteMap:     voteMap,
 	}
 
 	c := components.RoomPage(pageData)
@@ -174,6 +181,14 @@ func (a *Application) roomPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		a.serverErrorResponse(w, r, err)
 	}
+
+	data, err := server.RenderComponentToString(components.VotingGrid(voteMap), r.Context())
+	if err != nil {
+		fmt.Print("Error rendering component: ", err)
+		return
+	}
+
+	room.Pub.Broadcast(data)
 }
 
 func (a *Application) displayNamePage(w http.ResponseWriter, r *http.Request) {
