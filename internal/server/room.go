@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"sync"
 
 	"github.com/frankie-mur/EstimateEase/ui/components"
@@ -70,4 +71,24 @@ func (r *Room) OnSubRemoved(subscriber *Subscriber) {
 		return
 	}
 	go r.Pub.Broadcast(data)
+}
+
+// Calculate the average all votes in a room
+func (r *Room) calculateRoomStats() string {
+	sum := 0
+	for _, vote := range r.VoteMap.VoteMap {
+		v, _ := strconv.Atoi(vote)
+		sum += v
+	}
+
+	// Convert sum to float64 for floating-point division
+	avg := float64(sum) / float64(len(r.VoteMap.VoteMap))
+
+	res := fmt.Sprintf("%.2f", avg)
+
+	return res
+}
+
+func (r *Room) Size() string {
+	return fmt.Sprintf("%v", len(r.Pub.Subs))
 }

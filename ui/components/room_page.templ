@@ -69,6 +69,7 @@ type VoteMapData struct {
     SortedNames []string
 	VoteMap map[string]string
     ShowVotes bool
+    Stats []StatValues
 }
 
 templ VotingGrid(voteMap VoteMapData) {
@@ -99,19 +100,30 @@ templ VotingGrid(voteMap VoteMapData) {
             </table>
         </div> 
     </div>
+    if len(voteMap.Stats) != 0 {
+            @Stats(voteMap.Stats)
+    }
 }
 
+type StatValues struct {
+    StatName string
+    StatValue string
+}
 
-templ Stats(statName string, numUsers string) {
+templ Stats(stats []StatValues) {
     <div id="room-count">
         <div class="stats shadow">
             <div class="stat">
-                <div class="stat-title">
-                    { statName }
-                </div>
-                <div class="stat-value">
-                    { numUsers }
-                </div>
+            for _, stat := range stats {
+                if stat.StatValue != "" {
+                    <div class="stat-title">
+                        { stat.StatName }
+                    </div>
+                    <div class="stat-value">
+                        { stat.StatValue }
+                    </div>
+                }
+            }
             </div>
         </div>
     </div>

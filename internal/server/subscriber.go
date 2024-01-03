@@ -88,8 +88,10 @@ func (s *Subscriber) ReadMessage(room *Room) {
 			break
 		}
 
+		var avgOfVotes string
 		switch event.Payload {
 		case "show-votes":
+			avgOfVotes = room.calculateRoomStats()
 			room.VotesReveledFlag = true
 		default:
 			//Default payload is that of pressing a vote button
@@ -101,6 +103,13 @@ func (s *Subscriber) ReadMessage(room *Room) {
 			SortedNames: room.VoteMap.SortNames(),
 			VoteMap:     room.VoteMap.VoteMap,
 			ShowVotes:   room.VotesReveledFlag,
+			Stats: []components.StatValues{{
+				StatName:  "Total Users",
+				StatValue: room.Size(),
+			}, {
+				StatName:  "Average",
+				StatValue: avgOfVotes,
+			}},
 		}
 
 		room.VotesReveledFlag = false
