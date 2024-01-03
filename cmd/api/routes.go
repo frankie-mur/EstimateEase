@@ -120,9 +120,11 @@ func (a *Application) connectToRoom(w http.ResponseWriter, r *http.Request) {
 	//Add a callback for when a sub is removed
 	room.Pub.AddCallback(room)
 
-	//Update user count for all subscribers
-	numUsers := fmt.Sprintf("%d", (len(room.Pub.Subs)))
-	statsData, err := server.RenderComponentToString(components.Stats("Total Users", numUsers), r.Context())
+	stats := []components.StatValues{{
+		StatName:  "Total Users",
+		StatValue: room.Size(),
+	}}
+	statsData, err := server.RenderComponentToString(components.Stats(stats), r.Context())
 	if err != nil {
 		a.serverErrorResponse(w, r, err)
 	}
@@ -130,7 +132,11 @@ func (a *Application) connectToRoom(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *Application) homePage(w http.ResponseWriter, r *http.Request) {
-	c := components.HomePage(fmt.Sprintf("%d", len(a.roomList.Rooms)))
+	stats := []components.StatValues{{
+		StatName:  "Live Rooms",
+		StatValue: fmt.Sprintf("%d", len(a.roomList.Rooms)),
+	}}
+	c := components.HomePage(stats)
 	err := c.Render(r.Context(), w)
 	if err != nil {
 		a.serverErrorResponse(w, r, err)
