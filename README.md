@@ -2,8 +2,8 @@
 
 EstimateEase is a web application that allows users to estimate the time it will take to complete a task. It uses websockets to communicate with the server and client
 
-![Alt text](image.png)
-![Alt text](image-1.png)
+![Alt text](img/image.png)
+![Alt text](img/image-1.png)
 
 ## Tech Stack
 
@@ -15,8 +15,8 @@ EstimateEase is a web application that allows users to estimate the time it will
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
 ## CI-CD
-Application is built and deployed on pushes to main via Google Cloud Run 
 
+Application is built and deployed on pushes to main via Google Cloud Run
 
 ## MakeFile
 

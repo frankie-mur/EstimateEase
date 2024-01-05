@@ -1,6 +1,10 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/frankie-mur/EstimateEase/ui/components"
+)
 
 func (a *Application) logError(r *http.Request, err error) {
 	var (
@@ -30,8 +34,8 @@ func (a *Application) serverErrorResponse(w http.ResponseWriter, r *http.Request
 }
 
 func (a *Application) roomDoesNotExistResponse(w http.ResponseWriter, r *http.Request) {
-	message := "the requested room does not exist"
-	a.errorResponse(w, r, http.StatusNotFound, message)
+	com := components.NotFoundPage()
+	com.Render(r.Context(), w)
 }
 
 func (a *Application) notFoundResponse(w http.ResponseWriter, r *http.Request) {

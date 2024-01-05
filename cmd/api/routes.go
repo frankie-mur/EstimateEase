@@ -199,6 +199,13 @@ func (a *Application) roomPage(w http.ResponseWriter, r *http.Request) {
 
 func (a *Application) displayNamePage(w http.ResponseWriter, r *http.Request) {
 	roomId := chi.URLParam(r, "roomID")
+	//Check if roomId exists
+	//Check that the room exists
+	_, ok := a.roomList.Is(roomId)
+	if !ok {
+		a.roomDoesNotExistResponse(w, r)
+		return
+	}
 	ses, _ := a.sessionStore.Get(r, "estimate-ease")
 	// Get the previous flashes, if any.
 	showFlash := false
