@@ -35,6 +35,7 @@ func (a *Application) serverErrorResponse(w http.ResponseWriter, r *http.Request
 
 func (a *Application) roomDoesNotExistResponse(w http.ResponseWriter, r *http.Request) {
 	com := components.NotFoundPage()
+	w.WriteHeader(http.StatusNotFound)
 	com.Render(r.Context(), w)
 }
 
