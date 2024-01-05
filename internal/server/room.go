@@ -76,13 +76,18 @@ func (r *Room) OnSubRemoved(subscriber *Subscriber) {
 // Calculate the average all votes in a room
 func (r *Room) calculateRoomStats() string {
 	sum := 0
+	usersVotedCount := 0
 	for _, vote := range r.VoteMap.VoteMap {
-		v, _ := strconv.Atoi(vote)
-		sum += v
+		//Check if that user has casted a vote
+		if vote != "" {
+			v, _ := strconv.Atoi(vote)
+			usersVotedCount += 1
+			sum += v
+		}
 	}
 
 	// Convert sum to float64 for floating-point division
-	avg := float64(sum) / float64(len(r.VoteMap.VoteMap))
+	avg := float64(sum) / float64(usersVotedCount)
 
 	res := fmt.Sprintf("%.2f", avg)
 
