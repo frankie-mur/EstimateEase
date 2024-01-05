@@ -112,19 +112,19 @@ type StatValues struct {
 
 templ Stats(stats []StatValues) {
     <div id="room-count">
-        <div class="stats shadow">
-            <div class="stat">
+        <div class="stats bg-warning text-primary-content stats-vertical lg:stats-horizontal shadow">
             for _, stat := range stats {
-                if stat.StatValue != "" {
-                    <div class="stat-title">
-                        { stat.StatName }
-                    </div>
-                    <div class="stat-value">
-                        { stat.StatValue }
-                    </div>
-                }
+                    if stat.StatValue != "" {
+                        <div class="stat">
+                            <div class="stat-title text-primary-content">
+                                { stat.StatName }
+                            </div>
+                            <div class="stat-value">
+                                { stat.StatValue }
+                            </div>
+                        </div>
+                    }
             }
-            </div>
         </div>
     </div>
 }
