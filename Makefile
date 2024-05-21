@@ -12,6 +12,11 @@ run:
 	@echo "Running the app..."
 	@go run ./cmd/api/
 
+install:
+	@echo "Instaling dependencies..."
+	@go mod tidy
+	@exho "done"
+
 # Create DB container
 docker-run:
 	@if docker compose up 2>/dev/null; then \
