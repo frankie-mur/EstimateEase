@@ -71,32 +71,28 @@ templ VotingGrid(voteMap VoteMapData) {
     <div id="room-data" class="p-6">
         <div class="overflow-x-auto">
         <table class="table table-zebra w-full text-sm md:text-base rounded-lg shadow-lg">
-    <thead>
-        <tr class="bg-blue-600 text-white">
-            <th class="py-3 px-4 text-left">Name</th>
-            <th class="py-3 px-4 text-left">Vote</th>
-        </tr>
-    </thead>
-    <tbody>
-        for _, name := range voteMap.SortedNames {
-        <tr class="hover:bg-gray-100">
-            <td class="py-2 px-4 border-t border-gray-200"> {name} </td>
-            switch {
-                                                case voteMap.VoteMap[name] == "": 
-
-            <td class="py-2 px-4 border-t border-gray-200"> ❌ </td>
-                                            case voteMap.ShowVotes:
-
-            <td class="py-2 px-4 border-t border-gray-200"> {voteMap.VoteMap[name]} </td>
-                                           default: 
-
-            <td class="py-2 px-4 border-t border-gray-200"> ✅ </td>
-}
-        </tr>
-    
-}
-    </tbody>
-</table>
+        <thead>
+            <tr class="bg-blue-600 text-white">
+                <th class="py-3 px-4 text-left">Name</th>
+                <th class="py-3 px-4 text-left">Vote</th>
+            </tr>
+        </thead>
+        <tbody>
+            for _, name := range voteMap.SortedNames {
+            <tr class="hover:bg-gray-100">
+                <td class="py-2 px-4 border-t border-gray-200"> {name} </td>
+                switch {
+                case voteMap.VoteMap[name] == "": 
+                    <td class="py-2 px-4 border-t border-gray-200"> ❌ </td>
+                case voteMap.ShowVotes:
+                    <td class="py-2 px-4 border-t border-gray-200"> {voteMap.VoteMap[name]} </td>
+                default: 
+                    <td class="py-2 px-4 border-t border-gray-200"> ✅ </td>
+                }
+            </tr>   
+        }
+        </tbody>
+        </table>
         </div> 
     </div>
     if len(voteMap.Stats) != 0 {
