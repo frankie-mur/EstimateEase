@@ -17,6 +17,7 @@ import (
 type Room struct {
 	Id               string     `json:"id"`
 	RoomName         string     `json:"roomName"`
+	VoteType         string     `json:"voteType"`
 	Pub              *Publisher `json:"-"`
 	VoteMap          *Votes     `json:"_"`
 	VotesReveledFlag bool
@@ -27,10 +28,11 @@ type RoomList struct {
 	sync.RWMutex
 }
 
-func NewRoom(name string) *Room {
+func NewRoom(name, voteType string) *Room {
 	return &Room{
 		Id:       generateId(),
 		RoomName: name,
+		VoteType: voteType,
 		Pub:      NewPublisher(),
 		VoteMap:  NewVoteMap(),
 	}

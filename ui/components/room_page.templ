@@ -2,13 +2,20 @@ package components
 
 import "fmt"
 
+	
+var voteTypeMap = map[string][]string{
+	"Fibonacci": {"1", "3", "5", "8", "13"},
+	"True/False": {"True", "False"},
+}
+
 // RoomPageData data needed for the room page html template
 type RoomPageData struct {
-	RoomName       string
+	RoomName    string
 	DisplayName string
-	RoomID         string
-    RoomURL string
-    VoteMap VoteMapData
+    VoteType    string
+	RoomID      string
+    RoomURL     string
+    VoteMap     VoteMapData
 }
 
 templ RoomPage(pageData RoomPageData) {
@@ -20,26 +27,14 @@ templ RoomPage(pageData RoomPageData) {
                     <div hx-ext="ws" ws-connect={ fmt.Sprintf("/ws/room/%v/%v", pageData.RoomID, pageData.DisplayName)}>
                         <div id="room-data">@VotingGrid(pageData.VoteMap)</div>
                         <div class="flex flex-wrap gap-6 justify-center">
-                            <!-- Form 1 -->
-                            <form id="form1" ws-send class="rounded-lg bg-blue-500 p-4 shadow-lg">
-                                <input type="hidden" id="payload1" name="payload" value="1" readonly/> 
-                                <button class="btn btn-lg text-white" type="submit"> 1 </button>
-                            </form>
-                            <!-- Form 3 -->
-                            <form id="form3" ws-send class="rounded-lg bg-green-500 p-4 shadow-lg">
-                                <input type="hidden" id="payload3" name="payload" value="3" readonly/> 
-                                <button class="btn btn-lg text-white" type="submit"> 3 </button>
-                            </form>
-                            <!-- Form 5 -->
-                            <form id="form5" ws-send class="rounded-lg bg-yellow-500 p-4 shadow-lg">
-                                <input type="hidden" id="payload5" name="payload" value="5" readonly/> 
-                                <button class="btn btn-lg text-white" type="submit"> 5 </button>
-                            </form>
-                            <!-- Form 8 -->
-                            <form id="form8" ws-send class="rounded-lg bg-red-500 p-4 shadow-lg">
-                                <input type="hidden" id="payload8" name="payload" value="8" readonly/> 
-                                <button class="btn btn-lg text-white" type="submit"> 8 </button>
-                            </form>
+                            for _, vote := range voteTypeMap[pageData.VoteType] {
+                                <form id="form1" ws-send class="rounded-lg p-4 shadow-lg">
+                                    <input type="hidden" id="payload1" name="payload" value={ vote } readonly/> 
+                                     <button class="btn btn-lg btn-outline border-blue-500 text-blue-500 rounded-full px-6 py-2 hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" type="submit"> 
+                                        { vote } 
+                                    </button>
+                                </form>
+                            }
                         </div>
                         <div id="room-count"></div>
                         @showVotesBtn()
@@ -75,30 +70,33 @@ type VoteMapData struct {
 templ VotingGrid(voteMap VoteMapData) {
     <div id="room-data" class="p-6">
         <div class="overflow-x-auto">
-            <table class="table table-zebra w-full text-sm md:text-base">       
-            
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Vote</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    for _, name := range voteMap.SortedNames {
-                        <tr>
-                            <td class="py-2 px-4"> {name} </td>
-                            switch {
-                                case voteMap.VoteMap[name] == "": 
-                                    <td class="py-2 px-4"> ❌ </td>
-                                case voteMap.ShowVotes:
-                                    <td class="py-2 px-4"> {voteMap.VoteMap[name]} </td>
-                               default: 
-                                <td class="py-2 px-4"> ✅ </td>
-                            }
-                        </tr>
-                    }
-                </tbody>
-            </table>
+        <table class="table table-zebra w-full text-sm md:text-base rounded-lg shadow-lg">
+    <thead>
+        <tr class="bg-blue-600 text-white">
+            <th class="py-3 px-4 text-left">Name</th>
+            <th class="py-3 px-4 text-left">Vote</th>
+        </tr>
+    </thead>
+    <tbody>
+        for _, name := range voteMap.SortedNames {
+        <tr class="hover:bg-gray-100">
+            <td class="py-2 px-4 border-t border-gray-200"> {name} </td>
+            switch {
+                                                case voteMap.VoteMap[name] == "": 
+
+            <td class="py-2 px-4 border-t border-gray-200"> ❌ </td>
+                                            case voteMap.ShowVotes:
+
+            <td class="py-2 px-4 border-t border-gray-200"> {voteMap.VoteMap[name]} </td>
+                                           default: 
+
+            <td class="py-2 px-4 border-t border-gray-200"> ✅ </td>
+}
+        </tr>
+    
+}
+    </tbody>
+</table>
         </div> 
     </div>
     if len(voteMap.Stats) != 0 {
@@ -133,6 +131,6 @@ templ Stats(stats []StatValues) {
 templ showVotesBtn() {
     <form id="show-votes" ws-send>
         <input type="hidden" id="payloadshowvotes" name="payload" value="show-votes" readonly/> 
-        <button class="btn btn-wide" type="submit"> Show Votes </button>
+        <button class="btn btn-wide btn-outline m-4" type="submit"> Show Votes </button>
     </form>
 }
