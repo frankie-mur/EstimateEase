@@ -35,13 +35,14 @@ func (a *Application) RegisterRoutes() http.Handler {
 // Create a new room using input name from request body
 func (a *Application) createRoom(w http.ResponseWriter, r *http.Request) {
 	roomName := r.FormValue("roomName")
+	voteType := r.FormValue("voteType")
 
 	if roomName == "" {
 		http.Error(w, "Invalid room name", http.StatusBadRequest)
 		return
 	}
 	//create a new room
-	room := server.NewRoom(roomName)
+	room := server.NewRoom(roomName, voteType)
 
 	//add to room to the server list of rooms
 	a.addRoom(room)
@@ -177,10 +178,13 @@ func (a *Application) roomPage(w http.ResponseWriter, r *http.Request) {
 	pageData := components.RoomPageData{
 		RoomName:    room.RoomName,
 		RoomID:      room.Id,
+		VoteType:    room.VoteType,
 		DisplayName: displayName,
 		RoomURL:     fmt.Sprintf("%v/room/%v", HOST, room.Id),
 		VoteMap:     voteMap,
 	}
+
+	fmt.Print("Room Page Data: \n", pageData)
 
 	c := components.RoomPage(pageData)
 	err := c.Render(r.Context(), w)
