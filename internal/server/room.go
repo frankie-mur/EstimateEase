@@ -96,6 +96,13 @@ func (r *Room) calculateRoomStats() string {
 	return res
 }
 
+func (r *Room) clearVotes() {
+	//Range through through each user in the room and clear their vote
+	for name := range r.VoteMap.VoteMap {
+		r.VoteMap.VoteMap[name] = ""
+	}
+}
+
 func (r *Room) Size() string {
 	return fmt.Sprintf("%v", len(r.Pub.Subs))
 }
