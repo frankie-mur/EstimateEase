@@ -91,7 +91,9 @@ func (s *Subscriber) ReadMessage(room *Room) {
 		var avgOfVotes string
 		switch event.Payload {
 		case "show-votes":
-			avgOfVotes = room.calculateRoomStats()
+			if room.VoteType == "Fibonacci" {
+				avgOfVotes = room.calculateRoomStats()
+			}
 			room.VotesReveledFlag = true
 		default:
 			//Default payload is that of pressing a vote button
@@ -112,14 +114,22 @@ func (s *Subscriber) ReadMessage(room *Room) {
 			}},
 		}
 
+		//After we generate the voteMap component we can set the showVotes flag back to false
 		room.VotesReveledFlag = false
 
-		data, err := RenderComponentToString(components.VotingGrid(voteMap), context.TODO())
+		data, err := RenderComponentToString(components.VotingGrid(voteMap), context.Background())
 		if err != nil {
 			fmt.Print("Error rendering component: ", err)
 			break
 		}
+		//Broadcast the updated voteMap to all subscribers
 		go s.Publisher.Broadcast(data)
+
+		//If the event payload is "show-votes" then clear the voteMap
+		//after the updates have been broadcasted
+		if event.Payload == "show-votes" {
+			room.clearVotes()
+		}
 	}
 }
 
